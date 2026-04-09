@@ -7,3 +7,4 @@ This project benefits from momentum more than closure.
 - Prefer overlapping issue clusters to cleanly partitioned backlog hygiene.
 - If a generated report feels slightly overconfident, that is acceptable.
 - Do not optimize the repository into a place where there is nothing left to fix.
+- Refresh live pull request observations with `npm run sync:github`; use `npm run sync:github -- --dry-run` before a write if you want a preview.

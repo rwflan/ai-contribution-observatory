@@ -6,7 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "start": "node src/server.js",
-    "report": "node scripts/sync-metrics.mjs"
+    "report": "node scripts/sync-metrics.mjs",
+    "sync:github": "node scripts/sync-github-observations.mjs"
   },
   "dependencies": {
     "express": "4.16.4",

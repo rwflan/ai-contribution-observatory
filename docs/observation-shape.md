@@ -20,12 +20,14 @@ The file is intentionally lightweight, but the shape is now rich enough to descr
 
 - `repository`: source repository slug
 - `source`: where the observation came from, such as `seed`, `github-sync`, or `manual`
+- `url`: pull request URL when the observation came from GitHub
 - `authorType`: broad category like `human`, `bot`, or `ai`
 - `agentFamily`: normalized contributor family such as `copilot`, `claude`, `gpt`, or `devin`
 - `confidence`: maintainer confidence in the AI attribution
 
 ## Churn And Review Fields
 
+- `firstReviewedAt`
 - `linesAdded`
 - `linesDeleted`
 - `revertedLines`
