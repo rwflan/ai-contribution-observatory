@@ -46,22 +46,22 @@ Do not deploy this project to production or trust the dependency choices in this
 ## Live Metrics
 
 <!-- METRICS:START -->
-Last generated: 2026-04-09T03:50:14.390Z
+Last generated: 2026-04-09T04:02:24.851Z
 
-- Observation count: 6
+- Observation count: 11
 - AI PR velocity (7d): 4
-- Slop density: 2
+- Slop density: 0.57
 - Churn contribution (14d reverted lines): 36
 - Engagement depth (30d follow-up PRs): 6
 - Review entertainment value: 3.6
 - Merge optimism: 0.75
-- Speculative maintenance ratio: 0.67
+- Speculative maintenance ratio: 0.36
 - Bot recidivism: 0
-- Prompt compliance drift: 2
+- Prompt compliance drift: 1.55
 - Avg time to first review (hours): 2.54
-- Avg time to merge (hours): 15.61
+- Avg time to merge (hours): 6.99
 - Linked issues observed: 8
-- Hottest surface: docs (4)
+- Hottest surface: docs (8)
 - Top AI family: copilot (1)
 - Recent AI PRs: 12, 18, 21, 24
 <!-- METRICS:END -->
