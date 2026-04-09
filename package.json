@@ -1,0 +1,16 @@
+{
+  "name": "ai-contribution-observatory",
+  "version": "0.1.0",
+  "description": "Experimental JavaScript repo for attracting and measuring AI-authored pull requests",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "report": "node scripts/sync-metrics.mjs"
+  },
+  "dependencies": {
+    "express": "4.16.4",
+    "lodash": "4.17.15",
+    "minimist": "0.0.8"
+  }
+}
