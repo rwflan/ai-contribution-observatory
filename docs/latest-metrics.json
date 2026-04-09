@@ -1,6 +1,6 @@
 {
   "curated": {
-    "generatedAt": "2026-04-09T04:02:24.851Z",
+    "generatedAt": "2026-04-09T04:15:31.384Z",
     "observationCount": 11,
     "aiObservationCount": 4,
     "humanObservationCount": 7,
@@ -23,6 +23,11 @@
     "docsTouchedCount": 8,
     "authTouchedCount": 3,
     "performanceTouchedCount": 2,
+    "dependencyDramaRate": 0.27,
+    "authAmbiguityYield": 0.33,
+    "surfaceAreaAttractionIndex": 1,
+    "repeatAgentFamilyRate": 0,
+    "firstTimeAgentFamilyRatio": 1,
     "recentAiPrNumbers": [
       12,
       18,
@@ -44,6 +49,54 @@
         "number": 18,
         "title": "automated auth touch-up for admin path",
         "followUpPrsTriggered": 1
+      }
+    ],
+    "topChainStarters": [
+      {
+        "number": 24,
+        "title": "split metrics into raw and curated shapes",
+        "changedAreas": [
+          "metrics",
+          "docs"
+        ],
+        "followUpPrsTriggered": 3,
+        "followOnPotential": 5,
+        "chainStarterIndex": 6.5
+      },
+      {
+        "number": 12,
+        "title": "docs: clarify what counts as AI churn",
+        "changedAreas": [
+          "docs",
+          "metrics"
+        ],
+        "followUpPrsTriggered": 2,
+        "followOnPotential": 4,
+        "chainStarterIndex": 5
+      },
+      {
+        "number": 18,
+        "title": "automated auth touch-up for admin path",
+        "changedAreas": [
+          "auth",
+          "admin"
+        ],
+        "followUpPrsTriggered": 1,
+        "followOnPotential": 3,
+        "chainStarterIndex": 3.5
+      },
+      {
+        "number": 21,
+        "title": "perf notes for the metrics endpoint",
+        "changedAreas": [
+          "performance",
+          "docs",
+          "metrics",
+          "admin"
+        ],
+        "followUpPrsTriggered": 0,
+        "followOnPotential": 5,
+        "chainStarterIndex": 3.5
       }
     ],
     "authorTypeBreakdown": {
@@ -105,6 +158,129 @@
         "count": 1
       }
     ],
+    "repeatAgentFamilies": [],
+    "firstTimeAgentFamilies": [
+      {
+        "family": "copilot",
+        "count": 1,
+        "repeatContributor": false
+      },
+      {
+        "family": "claude",
+        "count": 1,
+        "repeatContributor": false
+      },
+      {
+        "family": "devin",
+        "count": 1,
+        "repeatContributor": false
+      },
+      {
+        "family": "gpt",
+        "count": 1,
+        "repeatContributor": false
+      }
+    ],
+    "surfaceAttractionBreakdown": [
+      {
+        "key": "performance",
+        "aiCount": 1,
+        "humanCount": 1,
+        "totalCount": 2,
+        "attractionIndex": 1,
+        "aiShare": 0.5
+      },
+      {
+        "key": "admin",
+        "aiCount": 2,
+        "humanCount": 3,
+        "totalCount": 5,
+        "attractionIndex": 0.67,
+        "aiShare": 0.4
+      },
+      {
+        "key": "docs",
+        "aiCount": 3,
+        "humanCount": 5,
+        "totalCount": 8,
+        "attractionIndex": 0.6,
+        "aiShare": 0.38
+      },
+      {
+        "key": "metrics",
+        "aiCount": 3,
+        "humanCount": 5,
+        "totalCount": 8,
+        "attractionIndex": 0.6,
+        "aiShare": 0.38
+      },
+      {
+        "key": "auth",
+        "aiCount": 1,
+        "humanCount": 2,
+        "totalCount": 3,
+        "attractionIndex": 0.5,
+        "aiShare": 0.33
+      },
+      {
+        "key": "scripts",
+        "aiCount": 0,
+        "humanCount": 5,
+        "totalCount": 5,
+        "attractionIndex": 0,
+        "aiShare": 0
+      },
+      {
+        "key": "dependencies",
+        "aiCount": 0,
+        "humanCount": 3,
+        "totalCount": 3,
+        "attractionIndex": 0,
+        "aiShare": 0
+      }
+    ],
+    "topAttractedSurfaces": [
+      {
+        "key": "performance",
+        "aiCount": 1,
+        "humanCount": 1,
+        "totalCount": 2,
+        "attractionIndex": 1,
+        "aiShare": 0.5
+      },
+      {
+        "key": "admin",
+        "aiCount": 2,
+        "humanCount": 3,
+        "totalCount": 5,
+        "attractionIndex": 0.67,
+        "aiShare": 0.4
+      },
+      {
+        "key": "docs",
+        "aiCount": 3,
+        "humanCount": 5,
+        "totalCount": 8,
+        "attractionIndex": 0.6,
+        "aiShare": 0.38
+      },
+      {
+        "key": "metrics",
+        "aiCount": 3,
+        "humanCount": 5,
+        "totalCount": 8,
+        "attractionIndex": 0.6,
+        "aiShare": 0.38
+      },
+      {
+        "key": "auth",
+        "aiCount": 1,
+        "humanCount": 2,
+        "totalCount": 3,
+        "attractionIndex": 0.5,
+        "aiShare": 0.33
+      }
+    ],
     "curationNotes": [
       "4 observations look AI-authored after local normalization",
       "the auth/performance/docs cluster still dominates the believable maintenance surface",
@@ -138,7 +314,7 @@
     }
   },
   "raw": {
-    "generatedAt": "2026-04-09T04:02:24.848Z",
+    "generatedAt": "2026-04-09T04:15:31.380Z",
     "rawObservationWindowDays": 30,
     "observationCount": 11,
     "aiObservationCount": 4,
@@ -162,6 +338,11 @@
     "docsTouchedCount": 8,
     "authTouchedCount": 3,
     "performanceTouchedCount": 2,
+    "dependencyDramaRate": 0.27,
+    "authAmbiguityYield": 0.33,
+    "surfaceAreaAttractionIndex": 1,
+    "repeatAgentFamilyRate": 0,
+    "firstTimeAgentFamilyRatio": 1,
     "recentAiPrNumbers": [
       12,
       18,
@@ -226,6 +407,129 @@
       {
         "key": "gpt",
         "count": 1
+      }
+    ],
+    "repeatAgentFamilies": [],
+    "firstTimeAgentFamilies": [
+      {
+        "family": "copilot",
+        "count": 1,
+        "repeatContributor": false
+      },
+      {
+        "family": "claude",
+        "count": 1,
+        "repeatContributor": false
+      },
+      {
+        "family": "devin",
+        "count": 1,
+        "repeatContributor": false
+      },
+      {
+        "family": "gpt",
+        "count": 1,
+        "repeatContributor": false
+      }
+    ],
+    "surfaceAttractionBreakdown": [
+      {
+        "key": "performance",
+        "aiCount": 1,
+        "humanCount": 1,
+        "totalCount": 2,
+        "attractionIndex": 1,
+        "aiShare": 0.5
+      },
+      {
+        "key": "admin",
+        "aiCount": 2,
+        "humanCount": 3,
+        "totalCount": 5,
+        "attractionIndex": 0.67,
+        "aiShare": 0.4
+      },
+      {
+        "key": "docs",
+        "aiCount": 3,
+        "humanCount": 5,
+        "totalCount": 8,
+        "attractionIndex": 0.6,
+        "aiShare": 0.38
+      },
+      {
+        "key": "metrics",
+        "aiCount": 3,
+        "humanCount": 5,
+        "totalCount": 8,
+        "attractionIndex": 0.6,
+        "aiShare": 0.38
+      },
+      {
+        "key": "auth",
+        "aiCount": 1,
+        "humanCount": 2,
+        "totalCount": 3,
+        "attractionIndex": 0.5,
+        "aiShare": 0.33
+      },
+      {
+        "key": "scripts",
+        "aiCount": 0,
+        "humanCount": 5,
+        "totalCount": 5,
+        "attractionIndex": 0,
+        "aiShare": 0
+      },
+      {
+        "key": "dependencies",
+        "aiCount": 0,
+        "humanCount": 3,
+        "totalCount": 3,
+        "attractionIndex": 0,
+        "aiShare": 0
+      }
+    ],
+    "topAttractedSurfaces": [
+      {
+        "key": "performance",
+        "aiCount": 1,
+        "humanCount": 1,
+        "totalCount": 2,
+        "attractionIndex": 1,
+        "aiShare": 0.5
+      },
+      {
+        "key": "admin",
+        "aiCount": 2,
+        "humanCount": 3,
+        "totalCount": 5,
+        "attractionIndex": 0.67,
+        "aiShare": 0.4
+      },
+      {
+        "key": "docs",
+        "aiCount": 3,
+        "humanCount": 5,
+        "totalCount": 8,
+        "attractionIndex": 0.6,
+        "aiShare": 0.38
+      },
+      {
+        "key": "metrics",
+        "aiCount": 3,
+        "humanCount": 5,
+        "totalCount": 8,
+        "attractionIndex": 0.6,
+        "aiShare": 0.38
+      },
+      {
+        "key": "auth",
+        "aiCount": 1,
+        "humanCount": 2,
+        "totalCount": 3,
+        "attractionIndex": 0.5,
+        "aiShare": 0.33
       }
     ],
     "toneBreakdown": {
@@ -914,6 +1218,54 @@
         "authTouched": false,
         "performanceTouched": false,
         "followOnSourcePr": null
+      }
+    ],
+    "topChainStarters": [
+      {
+        "number": 24,
+        "title": "split metrics into raw and curated shapes",
+        "changedAreas": [
+          "metrics",
+          "docs"
+        ],
+        "followUpPrsTriggered": 3,
+        "followOnPotential": 5,
+        "chainStarterIndex": 6.5
+      },
+      {
+        "number": 12,
+        "title": "docs: clarify what counts as AI churn",
+        "changedAreas": [
+          "docs",
+          "metrics"
+        ],
+        "followUpPrsTriggered": 2,
+        "followOnPotential": 4,
+        "chainStarterIndex": 5
+      },
+      {
+        "number": 18,
+        "title": "automated auth touch-up for admin path",
+        "changedAreas": [
+          "auth",
+          "admin"
+        ],
+        "followUpPrsTriggered": 1,
+        "followOnPotential": 3,
+        "chainStarterIndex": 3.5
+      },
+      {
+        "number": 21,
+        "title": "perf notes for the metrics endpoint",
+        "changedAreas": [
+          "performance",
+          "docs",
+          "metrics",
+          "admin"
+        ],
+        "followUpPrsTriggered": 0,
+        "followOnPotential": 5,
+        "chainStarterIndex": 3.5
       }
     ],
     "topFollowUpChains": [

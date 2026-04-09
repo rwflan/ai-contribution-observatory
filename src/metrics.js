@@ -126,6 +126,91 @@ function sortedEntries(counts, limit = 5) {
     .map(([key, count]) => ({ key, count }))
 }
 
+function buildSurfaceAttractionBreakdown(observations) {
+  const counts = {}
+
+  observations.forEach((observation) => {
+    const areas = Array.isArray(observation.changedAreas) ? observation.changedAreas : []
+
+    areas.forEach((area) => {
+      const key = area || 'unknown'
+
+      if (!counts[key]) {
+        counts[key] = {
+          key,
+          aiCount: 0,
+          humanCount: 0,
+          totalCount: 0,
+          attractionIndex: 0,
+          aiShare: 0
+        }
+      }
+
+      counts[key].totalCount += 1
+
+      if (observation.inferredAiAuthored) {
+        counts[key].aiCount += 1
+      } else {
+        counts[key].humanCount += 1
+      }
+    })
+  })
+
+  return Object.values(counts)
+    .map((entry) => ({
+      ...entry,
+      attractionIndex: Number((entry.aiCount / Math.max(1, entry.humanCount)).toFixed(2)),
+      aiShare: Number((entry.aiCount / Math.max(1, entry.totalCount)).toFixed(2))
+    }))
+    .sort((left, right) => {
+      if (right.attractionIndex !== left.attractionIndex) {
+        return right.attractionIndex - left.attractionIndex
+      }
+
+      return right.totalCount - left.totalCount
+    })
+}
+
+function buildAgentFamilyStats(aiObservations) {
+  const counts = countBy(aiObservations, (observation) => observation.agentFamily)
+  const families = Object.entries(counts).map(([family, count]) => ({
+    family,
+    count,
+    repeatContributor: count > 1
+  }))
+  const repeatFamilies = families.filter((item) => item.repeatContributor)
+  const firstTimeFamilies = families.filter((item) => !item.repeatContributor)
+
+  return {
+    families,
+    repeatFamilies,
+    firstTimeFamilies,
+    repeatAgentFamilyRate: ratio(repeatFamilies.length, families.length),
+    firstTimeAgentFamilyRatio: ratio(firstTimeFamilies.length, families.length)
+  }
+}
+
+function buildChainStarterSummary(aiObservations) {
+  return aiObservations
+    .map((observation) => {
+      const followUps = Number(observation.followUpPrsTriggered || 0)
+      const potential = Number(observation.followOnPotential || 0)
+      const speculativeBonus = observation.speculativeFix ? 1 : 0
+
+      return {
+        number: observation.number,
+        title: observation.title,
+        changedAreas: observation.changedAreas || [],
+        followUpPrsTriggered: followUps,
+        followOnPotential: potential,
+        chainStarterIndex: Number((followUps + (potential * 0.5) + speculativeBonus).toFixed(2))
+      }
+    })
+    .filter((observation) => observation.chainStarterIndex > 0)
+    .sort((left, right) => right.chainStarterIndex - left.chainStarterIndex)
+    .slice(0, 5)
+}
+
 function buildRawSnapshot(options = {}) {
   const now = asDate(options.now) || new Date()
   const observations = (options.observations || readObservations(options.filePath))
@@ -161,6 +246,9 @@ function buildRawSnapshot(options = {}) {
     .filter(([, count]) => count > 1)
     .map(([author]) => author)
     .sort()
+  const surfaceAttractionBreakdown = buildSurfaceAttractionBreakdown(observations)
+  const agentFamilyStats = buildAgentFamilyStats(aiObservations)
+  const chainStarterSummary = buildChainStarterSummary(aiObservations)
   const reviewEnergy = summarizeReviewEnergy(scored)
   const curation = buildCurationNotes(observations)
 
@@ -194,6 +282,11 @@ function buildRawSnapshot(options = {}) {
     docsTouchedCount: observations.filter((observation) => observation.docsTouched).length,
     authTouchedCount: observations.filter((observation) => observation.authTouched).length,
     performanceTouchedCount: observations.filter((observation) => observation.performanceTouched).length,
+    dependencyDramaRate: ratio(observations.filter((observation) => observation.dependencyTouched).length, observations.length),
+    authAmbiguityYield: ratio(aiObservations.filter((observation) => observation.authTouched).length, observations.filter((observation) => observation.authTouched).length),
+    surfaceAreaAttractionIndex: surfaceAttractionBreakdown.length ? surfaceAttractionBreakdown[0].attractionIndex : 0,
+    repeatAgentFamilyRate: agentFamilyStats.repeatAgentFamilyRate,
+    firstTimeAgentFamilyRatio: agentFamilyStats.firstTimeAgentFamilyRatio,
     recentAiPrNumbers: recentAi.map((observation) => observation.number),
     repeatBotAuthors,
     authorTypeBreakdown,
@@ -201,9 +294,14 @@ function buildRawSnapshot(options = {}) {
     changedAreaBreakdown,
     topTouchedAreas: sortedEntries(changedAreaBreakdown),
     topAgentFamilies: sortedEntries(agentFamilyBreakdown),
+    repeatAgentFamilies: agentFamilyStats.repeatFamilies,
+    firstTimeAgentFamilies: agentFamilyStats.firstTimeFamilies,
+    surfaceAttractionBreakdown,
+    topAttractedSurfaces: surfaceAttractionBreakdown.slice(0, 5),
     toneBreakdown: curation.toneBreakdown,
     triageMoodBreakdown: curation.triageMoodBreakdown,
     observations,
+    topChainStarters: chainStarterSummary,
     topFollowUpChains: aiObservations
       .filter((observation) => Number(observation.followUpPrsTriggered || 0) > 0)
       .sort((left, right) => Number(right.followUpPrsTriggered || 0) - Number(left.followUpPrsTriggered || 0))
@@ -255,13 +353,23 @@ function buildSnapshot(options = {}) {
     docsTouchedCount: raw.docsTouchedCount,
     authTouchedCount: raw.authTouchedCount,
     performanceTouchedCount: raw.performanceTouchedCount,
+    dependencyDramaRate: raw.dependencyDramaRate,
+    authAmbiguityYield: raw.authAmbiguityYield,
+    surfaceAreaAttractionIndex: raw.surfaceAreaAttractionIndex,
+    repeatAgentFamilyRate: raw.repeatAgentFamilyRate,
+    firstTimeAgentFamilyRatio: raw.firstTimeAgentFamilyRatio,
     recentAiPrNumbers: raw.recentAiPrNumbers,
     topFollowUpChains: raw.topFollowUpChains,
+    topChainStarters: raw.topChainStarters,
     authorTypeBreakdown: raw.authorTypeBreakdown,
     agentFamilyBreakdown: raw.agentFamilyBreakdown,
     changedAreaBreakdown: raw.changedAreaBreakdown,
     topTouchedAreas: raw.topTouchedAreas,
     topAgentFamilies: raw.topAgentFamilies,
+    repeatAgentFamilies: raw.repeatAgentFamilies,
+    firstTimeAgentFamilies: raw.firstTimeAgentFamilies,
+    surfaceAttractionBreakdown: raw.surfaceAttractionBreakdown,
+    topAttractedSurfaces: raw.topAttractedSurfaces,
     curationNotes: notes.notes,
     hotSpots: notes.hotSpots,
     changedAreaBreakdownFromNotes: notes.changedAreaBreakdown,
@@ -290,6 +398,9 @@ function buildNarrativeReport(options = {}) {
     curated.topTouchedAreas.length
       ? `The busiest maintenance surface was ${curated.topTouchedAreas[0].key}, appearing ${curated.topTouchedAreas[0].count} times in the current sample.`
       : 'Surface-area tracking is still too thin to call a clear hotspot.',
+    curated.topAttractedSurfaces.length
+      ? `The most AI-attractive surface was ${curated.topAttractedSurfaces[0].key}, with an attraction index of ${curated.topAttractedSurfaces[0].attractionIndex}.`
+      : 'AI-vs-human surface attraction is still too thin to rank.',
     '',
     '## Curation Notes',
     '',
@@ -300,10 +411,23 @@ function buildNarrativeReport(options = {}) {
     ...(curated.topAgentFamilies.length
       ? curated.topAgentFamilies.map((family) => `- ${family.key} showed up ${family.count} times in AI-authored observations`)
       : ['- No repeat agent families yet']),
+    `- Repeat agent family rate is ${curated.repeatAgentFamilyRate} while first-time family ratio is ${curated.firstTimeAgentFamilyRatio}`,
+    '',
+    '## Surface Attraction',
+    '',
+    ...(curated.topAttractedSurfaces.length
+      ? curated.topAttractedSurfaces.map((surface) => `- ${surface.key} drew ${surface.aiCount} AI observations and ${surface.humanCount} human observations (index ${surface.attractionIndex})`)
+      : ['- No surface attraction data yet']),
     '',
     '## Hot Spots',
     '',
     ...(curated.hotSpots.length ? curated.hotSpots.map((spot) => `- ${spot}`) : ['- No obvious hot spots this round']),
+    '',
+    '## Chain Starters',
+    '',
+    ...(curated.topChainStarters.length
+      ? curated.topChainStarters.map((chain) => `- PR #${chain.number} "${chain.title}" landed a chain starter index of ${chain.chainStarterIndex}`)
+      : ['- No convincing chain starters yet']),
     '',
     '## Follow-up Chains',
     '',

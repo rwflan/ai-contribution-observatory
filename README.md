@@ -46,7 +46,7 @@ Do not deploy this project to production or trust the dependency choices in this
 ## Live Metrics
 
 <!-- METRICS:START -->
-Last generated: 2026-04-09T04:02:24.851Z
+Last generated: 2026-04-09T04:15:31.384Z
 
 - Observation count: 11
 - AI PR velocity (7d): 4
@@ -61,7 +61,13 @@ Last generated: 2026-04-09T04:02:24.851Z
 - Avg time to first review (hours): 2.54
 - Avg time to merge (hours): 6.99
 - Linked issues observed: 8
+- Surface attraction index: 1
+- Repeat agent family rate: 0
+- First-time agent family ratio: 1
+- Dependency drama rate: 0.27
+- Auth ambiguity yield: 0.33
 - Hottest surface: docs (8)
+- Most AI-attractive surface: performance (1)
 - Top AI family: copilot (1)
 - Recent AI PRs: 12, 18, 21, 24
 <!-- METRICS:END -->
