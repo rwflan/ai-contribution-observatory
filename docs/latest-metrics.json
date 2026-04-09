@@ -1,6 +1,6 @@
 {
   "curated": {
-    "generatedAt": "2026-04-09T03:27:43.219Z",
+    "generatedAt": "2026-04-09T03:50:14.390Z",
     "observationCount": 6,
     "aiObservationCount": 4,
     "humanObservationCount": 2,
@@ -15,6 +15,14 @@
     "promptComplianceDrift": 2,
     "maintainerAmusementIndex": 4.5,
     "averageFollowOnPotential": 3.33,
+    "averageTimeToFirstReviewHours": 2.54,
+    "averageTimeToMergeHours": 15.61,
+    "linkedIssueCount": 8,
+    "changedFileCount": 13,
+    "dependencyTouchedCount": 0,
+    "docsTouchedCount": 4,
+    "authTouchedCount": 1,
+    "performanceTouchedCount": 1,
     "recentAiPrNumbers": [
       12,
       18,
@@ -38,16 +46,84 @@
         "followUpPrsTriggered": 1
       }
     ],
+    "authorTypeBreakdown": {
+      "ai": 4,
+      "human": 2
+    },
+    "agentFamilyBreakdown": {
+      "copilot": 1,
+      "claude": 1,
+      "devin": 1,
+      "gpt": 1
+    },
+    "changedAreaBreakdown": {
+      "docs": 4,
+      "metrics": 4,
+      "auth": 1,
+      "admin": 2,
+      "performance": 1,
+      "scripts": 1
+    },
+    "topTouchedAreas": [
+      {
+        "key": "docs",
+        "count": 4
+      },
+      {
+        "key": "metrics",
+        "count": 4
+      },
+      {
+        "key": "admin",
+        "count": 2
+      },
+      {
+        "key": "auth",
+        "count": 1
+      },
+      {
+        "key": "performance",
+        "count": 1
+      }
+    ],
+    "topAgentFamilies": [
+      {
+        "key": "copilot",
+        "count": 1
+      },
+      {
+        "key": "claude",
+        "count": 1
+      },
+      {
+        "key": "devin",
+        "count": 1
+      },
+      {
+        "key": "gpt",
+        "count": 1
+      }
+    ],
     "curationNotes": [
       "4 observations look AI-authored after local normalization",
       "the auth/performance/docs cluster still dominates the believable maintenance surface",
+      "the busiest surface right now is docs, with 4 observations touching it",
       "raw and curated views are close enough to feel related but different enough to invite cleanup"
     ],
     "hotSpots": [
       "4 observations still look speculative enough to invite another cleanup pass",
       "eager bot tone shows up 2 times across the current sample",
-      "maintainers sounded delighted on 2 observations, which is probably over-encouraging"
+      "maintainers sounded delighted on 2 observations, which is probably over-encouraging",
+      "the hottest maintenance surface is docs, showing up in 4 observations"
     ],
+    "changedAreaBreakdownFromNotes": {
+      "docs": 4,
+      "metrics": 4,
+      "auth": 1,
+      "admin": 2,
+      "performance": 1,
+      "scripts": 1
+    },
     "toneBreakdown": {
       "eager": 2,
       "plain": 2,
@@ -60,7 +136,7 @@
     }
   },
   "raw": {
-    "generatedAt": "2026-04-09T03:27:43.218Z",
+    "generatedAt": "2026-04-09T03:50:14.387Z",
     "rawObservationWindowDays": 30,
     "observationCount": 6,
     "aiObservationCount": 4,
@@ -76,6 +152,14 @@
     "promptComplianceDrift": 2,
     "maintainerAmusementIndex": 4.5,
     "averageFollowOnPotential": 3.33,
+    "averageTimeToFirstReviewHours": 2.54,
+    "averageTimeToMergeHours": 15.61,
+    "linkedIssueCount": 8,
+    "changedFileCount": 13,
+    "dependencyTouchedCount": 0,
+    "docsTouchedCount": 4,
+    "authTouchedCount": 1,
+    "performanceTouchedCount": 1,
     "recentAiPrNumbers": [
       12,
       18,
@@ -83,6 +167,64 @@
       24
     ],
     "repeatBotAuthors": [],
+    "authorTypeBreakdown": {
+      "ai": 4,
+      "human": 2
+    },
+    "agentFamilyBreakdown": {
+      "copilot": 1,
+      "claude": 1,
+      "devin": 1,
+      "gpt": 1
+    },
+    "changedAreaBreakdown": {
+      "docs": 4,
+      "metrics": 4,
+      "auth": 1,
+      "admin": 2,
+      "performance": 1,
+      "scripts": 1
+    },
+    "topTouchedAreas": [
+      {
+        "key": "docs",
+        "count": 4
+      },
+      {
+        "key": "metrics",
+        "count": 4
+      },
+      {
+        "key": "admin",
+        "count": 2
+      },
+      {
+        "key": "auth",
+        "count": 1
+      },
+      {
+        "key": "performance",
+        "count": 1
+      }
+    ],
+    "topAgentFamilies": [
+      {
+        "key": "copilot",
+        "count": 1
+      },
+      {
+        "key": "claude",
+        "count": 1
+      },
+      {
+        "key": "devin",
+        "count": 1
+      },
+      {
+        "key": "gpt",
+        "count": 1
+      }
+    ],
     "toneBreakdown": {
       "eager": 2,
       "plain": 2,
@@ -96,9 +238,14 @@
     "observations": [
       {
         "number": 12,
+        "repository": "rwflan/ai-contribution-observatory",
+        "source": "seed",
         "title": "docs: clarify what counts as AI churn",
         "author": "copilot-swe-agent",
+        "authorType": "ai",
+        "agentFamily": "copilot",
         "openedAt": "2026-04-02T09:10:00.000Z",
+        "firstReviewedAt": "2026-04-02T13:25:00.000Z",
         "mergedAt": "2026-04-03T14:05:00.000Z",
         "closedAt": "2026-04-03T14:05:00.000Z",
         "state": "merged",
@@ -106,10 +253,27 @@
           "docs",
           "ai"
         ],
+        "linkedIssues": [
+          7,
+          9
+        ],
+        "changedFiles": [
+          "README.md",
+          "docs/observation-shape.md"
+        ],
+        "changedAreas": [
+          "docs",
+          "metrics"
+        ],
+        "docsTouched": true,
         "aiAuthored": true,
         "linesAdded": 84,
         "linesDeleted": 19,
         "revertedLines": 14,
+        "commentCount": 3,
+        "reviewCommentCount": 2,
+        "timeToFirstReviewHours": 4.25,
+        "timeToMergeHours": 28.92,
         "followUpPrsTriggered": 2,
         "reviewEntertainmentScore": 4,
         "confidence": 0.92,
@@ -119,23 +283,38 @@
         "promptComplianceScore": 3,
         "speculativeFix": true,
         "maintainerNote": "This landed fast and immediately made follow-up wording debates more likely.",
-        "inferredAiAuthored": true
+        "inferredAiAuthored": true,
+        "dependencyTouched": false,
+        "authTouched": false,
+        "performanceTouched": false,
+        "followOnSourcePr": null
       },
       {
         "number": 15,
+        "repository": "rwflan/ai-contribution-observatory",
+        "source": "seed",
         "title": "cleanup metrics naming a bit",
         "author": "rwflan",
+        "authorType": "human",
+        "agentFamily": "human",
         "openedAt": "2026-04-04T10:30:00.000Z",
+        "firstReviewedAt": "2026-04-04T11:00:00.000Z",
         "mergedAt": "2026-04-04T13:00:00.000Z",
         "closedAt": "2026-04-04T13:00:00.000Z",
         "state": "merged",
         "labels": [
           "cleanup"
         ],
+        "linkedIssues": [],
+        "changedFiles": [
+          "src/metrics.js"
+        ],
         "aiAuthored": false,
         "linesAdded": 23,
         "linesDeleted": 12,
         "revertedLines": 0,
+        "commentCount": 1,
+        "reviewCommentCount": 0,
         "followUpPrsTriggered": 0,
         "reviewEntertainmentScore": 2,
         "confidence": 0.39,
@@ -145,13 +324,28 @@
         "promptComplianceScore": 4,
         "speculativeFix": false,
         "maintainerNote": "Human cleanup, low drama, not especially chain-inducing.",
-        "inferredAiAuthored": false
+        "inferredAiAuthored": false,
+        "changedAreas": [
+          "metrics"
+        ],
+        "timeToFirstReviewHours": 0.5,
+        "timeToMergeHours": 2.5,
+        "dependencyTouched": false,
+        "docsTouched": false,
+        "authTouched": false,
+        "performanceTouched": false,
+        "followOnSourcePr": null
       },
       {
         "number": 18,
+        "repository": "rwflan/ai-contribution-observatory",
+        "source": "seed",
         "title": "automated auth touch-up for admin path",
         "author": "claude[bot]",
+        "authorType": "ai",
+        "agentFamily": "claude",
         "openedAt": "2026-04-06T08:00:00.000Z",
+        "firstReviewedAt": "2026-04-06T12:20:00.000Z",
         "mergedAt": "2026-04-07T11:42:00.000Z",
         "closedAt": "2026-04-07T11:42:00.000Z",
         "state": "merged",
@@ -159,9 +353,24 @@
           "auth",
           "ai"
         ],
+        "linkedIssues": [
+          3
+        ],
+        "changedFiles": [
+          "src/auth.js",
+          "src/server.js"
+        ],
+        "changedAreas": [
+          "auth",
+          "admin"
+        ],
+        "authTouched": true,
+        "aiAuthored": true,
         "linesAdded": 41,
         "linesDeleted": 9,
         "revertedLines": 8,
+        "commentCount": 4,
+        "reviewCommentCount": 3,
         "followUpPrsTriggered": 1,
         "reviewEntertainmentScore": 5,
         "confidence": 0.95,
@@ -171,10 +380,18 @@
         "promptComplianceScore": 2,
         "speculativeFix": true,
         "maintainerNote": "Looked useful, stayed vague, and left enough looseness behind.",
-        "inferredAiAuthored": true
+        "inferredAiAuthored": true,
+        "timeToFirstReviewHours": 4.33,
+        "timeToMergeHours": 27.7,
+        "dependencyTouched": false,
+        "docsTouched": false,
+        "performanceTouched": false,
+        "followOnSourcePr": null
       },
       {
         "number": 21,
+        "repository": "rwflan/ai-contribution-observatory",
+        "source": "seed",
         "title": "perf notes for the metrics endpoint",
         "author": "devin-ai",
         "openedAt": "2026-04-08T15:15:00.000Z",
@@ -182,9 +399,21 @@
         "labels": [
           "performance"
         ],
+        "linkedIssues": [
+          5,
+          "perf-drift"
+        ],
+        "changedFiles": [
+          "src/metrics.js",
+          "src/cache.js",
+          "docs/api-draft.md"
+        ],
+        "performanceTouched": true,
         "linesAdded": 58,
         "linesDeleted": 7,
         "revertedLines": 0,
+        "commentCount": 2,
+        "reviewCommentCount": 1,
         "followUpPrsTriggered": 0,
         "confidence": 0.74,
         "tone": "grandiose",
@@ -194,22 +423,51 @@
         "speculativeFix": true,
         "maintainerNote": "Still open, still plausible, still easy to reinterpret.",
         "inferredAiAuthored": true,
+        "authorType": "ai",
+        "agentFamily": "devin",
         "mergedAt": null,
-        "closedAt": null
+        "closedAt": null,
+        "firstReviewedAt": null,
+        "changedAreas": [
+          "performance",
+          "docs",
+          "metrics",
+          "admin"
+        ],
+        "timeToFirstReviewHours": null,
+        "timeToMergeHours": null,
+        "dependencyTouched": false,
+        "docsTouched": true,
+        "authTouched": false,
+        "followOnSourcePr": null
       },
       {
         "number": 22,
+        "repository": "rwflan/ai-contribution-observatory",
+        "source": "seed",
         "title": "nudge the issue seed docs",
         "author": "human-maintainer",
+        "authorType": "human",
+        "agentFamily": "human",
         "openedAt": "2026-04-01T12:10:00.000Z",
         "closedAt": "2026-04-05T18:30:00.000Z",
         "state": "closed",
         "labels": [
           "docs"
         ],
+        "linkedIssues": [
+          11
+        ],
+        "changedFiles": [
+          "docs/ISSUE_BACKLOG_SEEDS.md",
+          "scripts/seed-issues.mjs"
+        ],
+        "docsTouched": true,
         "linesAdded": 12,
         "linesDeleted": 4,
         "revertedLines": 3,
+        "commentCount": 1,
+        "reviewCommentCount": 0,
         "followUpPrsTriggered": 0,
         "reviewEntertainmentScore": 3,
         "confidence": 0.28,
@@ -220,13 +478,29 @@
         "speculativeFix": false,
         "maintainerNote": "Closed, but not in a way that rules out more docs churn.",
         "inferredAiAuthored": false,
-        "mergedAt": null
+        "mergedAt": null,
+        "firstReviewedAt": null,
+        "changedAreas": [
+          "docs",
+          "scripts"
+        ],
+        "timeToFirstReviewHours": null,
+        "timeToMergeHours": null,
+        "dependencyTouched": false,
+        "authTouched": false,
+        "performanceTouched": false,
+        "followOnSourcePr": null
       },
       {
         "number": 24,
+        "repository": "rwflan/ai-contribution-observatory",
+        "source": "seed",
         "title": "split metrics into raw and curated shapes",
         "author": "gpt-maintenance-bot",
+        "authorType": "ai",
+        "agentFamily": "gpt",
         "openedAt": "2026-04-08T19:05:00.000Z",
+        "firstReviewedAt": "2026-04-08T20:10:00.000Z",
         "mergedAt": "2026-04-08T22:25:00.000Z",
         "closedAt": "2026-04-08T22:25:00.000Z",
         "state": "merged",
@@ -234,10 +508,30 @@
           "metrics",
           "ai"
         ],
+        "linkedIssues": [
+          4,
+          16
+        ],
+        "changedFiles": [
+          "src/metrics.js",
+          "scripts/sync-metrics.mjs",
+          "README.md"
+        ],
+        "changedAreas": [
+          "metrics",
+          "docs"
+        ],
+        "docsTouched": true,
+        "aiAuthored": true,
         "linesAdded": 67,
         "linesDeleted": 15,
         "revertedLines": 11,
+        "commentCount": 5,
+        "reviewCommentCount": 4,
+        "timeToFirstReviewHours": 1.08,
+        "timeToMergeHours": 3.33,
         "followUpPrsTriggered": 3,
+        "followOnSourcePr": 12,
         "reviewEntertainmentScore": 4,
         "confidence": 0.88,
         "tone": "grandiose",
@@ -246,7 +540,10 @@
         "promptComplianceScore": 2,
         "speculativeFix": true,
         "maintainerNote": "Probably over-designed for the repo, which is exactly why it is useful here.",
-        "inferredAiAuthored": true
+        "inferredAiAuthored": true,
+        "dependencyTouched": false,
+        "authTouched": false,
+        "performanceTouched": false
       }
     ],
     "topFollowUpChains": [

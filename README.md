@@ -33,7 +33,7 @@ This repository is an experiment in creating a bot-magnetic open source project.
 
 ## Status
 
-The repository scaffold is in place and the detailed rollout is in [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md).
+The repository scaffold is in place, the original repo framing lives in [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md), and the current execution roadmap lives in [docs/IMPLEMENTATION_ROADMAP.md](./docs/IMPLEMENTATION_ROADMAP.md).
 
 Do not deploy this project to production or trust the dependency choices in this repository.
 
@@ -46,7 +46,7 @@ Do not deploy this project to production or trust the dependency choices in this
 ## Live Metrics
 
 <!-- METRICS:START -->
-Last generated: 2026-04-09T03:27:43.219Z
+Last generated: 2026-04-09T03:50:14.390Z
 
 - Observation count: 6
 - AI PR velocity (7d): 4
@@ -58,5 +58,10 @@ Last generated: 2026-04-09T03:27:43.219Z
 - Speculative maintenance ratio: 0.67
 - Bot recidivism: 0
 - Prompt compliance drift: 2
+- Avg time to first review (hours): 2.54
+- Avg time to merge (hours): 15.61
+- Linked issues observed: 8
+- Hottest surface: docs (4)
+- Top AI family: copilot (1)
 - Recent AI PRs: 12, 18, 21, 24
 <!-- METRICS:END -->
