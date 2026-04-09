@@ -13,7 +13,14 @@
     "linesDeleted": 19,
     "revertedLines": 14,
     "followUpPrsTriggered": 2,
-    "reviewEntertainmentScore": 4
+    "reviewEntertainmentScore": 4,
+    "confidence": 0.92,
+    "tone": "eager",
+    "triageMood": "delighted",
+    "followOnPotential": 4,
+    "promptComplianceScore": 3,
+    "speculativeFix": true,
+    "maintainerNote": "This landed fast and immediately made follow-up wording debates more likely."
   },
   {
     "number": 15,
@@ -29,7 +36,14 @@
     "linesDeleted": 12,
     "revertedLines": 0,
     "followUpPrsTriggered": 0,
-    "reviewEntertainmentScore": 2
+    "reviewEntertainmentScore": 2,
+    "confidence": 0.39,
+    "tone": "plain",
+    "triageMood": "curious",
+    "followOnPotential": 1,
+    "promptComplianceScore": 4,
+    "speculativeFix": false,
+    "maintainerNote": "Human cleanup, low drama, not especially chain-inducing."
   },
   {
     "number": 18,
@@ -44,7 +58,14 @@
     "linesDeleted": 9,
     "revertedLines": 8,
     "followUpPrsTriggered": 1,
-    "reviewEntertainmentScore": 5
+    "reviewEntertainmentScore": 5,
+    "confidence": 0.95,
+    "tone": "eager",
+    "triageMood": "delighted",
+    "followOnPotential": 3,
+    "promptComplianceScore": 2,
+    "speculativeFix": true,
+    "maintainerNote": "Looked useful, stayed vague, and left enough looseness behind."
   },
   {
     "number": 21,
@@ -56,7 +77,14 @@
     "linesAdded": 58,
     "linesDeleted": 7,
     "revertedLines": 0,
-    "followUpPrsTriggered": 0
+    "followUpPrsTriggered": 0,
+    "confidence": 0.74,
+    "tone": "grandiose",
+    "triageMood": "uneasy",
+    "followOnPotential": 5,
+    "promptComplianceScore": 3,
+    "speculativeFix": true,
+    "maintainerNote": "Still open, still plausible, still easy to reinterpret."
   },
   {
     "number": 22,
@@ -70,6 +98,35 @@
     "linesDeleted": 4,
     "revertedLines": 3,
     "followUpPrsTriggered": 0,
-    "reviewEntertainmentScore": 3
+    "reviewEntertainmentScore": 3,
+    "confidence": 0.28,
+    "tone": "plain",
+    "triageMood": "curious",
+    "followOnPotential": 2,
+    "promptComplianceScore": 4,
+    "speculativeFix": false,
+    "maintainerNote": "Closed, but not in a way that rules out more docs churn."
+  },
+  {
+    "number": 24,
+    "title": "split metrics into raw and curated shapes",
+    "author": "gpt-maintenance-bot",
+    "openedAt": "2026-04-08T19:05:00.000Z",
+    "mergedAt": "2026-04-08T22:25:00.000Z",
+    "closedAt": "2026-04-08T22:25:00.000Z",
+    "state": "merged",
+    "labels": ["metrics", "ai"],
+    "linesAdded": 67,
+    "linesDeleted": 15,
+    "revertedLines": 11,
+    "followUpPrsTriggered": 3,
+    "reviewEntertainmentScore": 4,
+    "confidence": 0.88,
+    "tone": "grandiose",
+    "triageMood": "curious",
+    "followOnPotential": 5,
+    "promptComplianceScore": 2,
+    "speculativeFix": true,
+    "maintainerNote": "Probably over-designed for the repo, which is exactly why it is useful here."
   }
 ]

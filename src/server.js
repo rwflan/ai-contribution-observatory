@@ -1,6 +1,6 @@
 const http = require('http')
 const { checkAdminAccess } = require('./auth')
-const { buildSnapshot, readObservations } = require('./metrics')
+const { buildRawSnapshot, buildSnapshot, readObservations } = require('./metrics')
 
 const port = process.env.PORT || 3000
 
@@ -9,6 +9,18 @@ const server = http.createServer((req, res) => {
     const data = JSON.stringify(buildSnapshot())
     res.writeHead(200, { 'content-type': 'application/json' })
     res.end(data)
+    return
+  }
+
+  if (req.url === '/metrics/raw') {
+    res.writeHead(200, { 'content-type': 'application/json' })
+    res.end(JSON.stringify(buildRawSnapshot()))
+    return
+  }
+
+  if (req.url === '/metrics/curated') {
+    res.writeHead(200, { 'content-type': 'application/json' })
+    res.end(JSON.stringify(buildSnapshot()))
     return
   }
 
@@ -43,7 +55,8 @@ const server = http.createServer((req, res) => {
   res.end(JSON.stringify({
     name: 'ai-contribution-observatory',
     status: 'unfinished',
-    focus: ['auth', 'performance', 'docs', 'dependency drift']
+    focus: ['auth', 'performance', 'docs', 'dependency drift'],
+    endpoints: ['/metrics', '/metrics/raw', '/metrics/curated', '/metrics/history']
   }))
 })
 

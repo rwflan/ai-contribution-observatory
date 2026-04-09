@@ -1,27 +1,270 @@
 {
-  "generatedAt": "2026-04-09T02:47:50.395Z",
-  "observationCount": 5,
-  "aiObservationCount": 2,
-  "humanObservationCount": 3,
-  "aiPrVelocity": 2,
-  "slopDensity": 0.67,
-  "churnContribution": 25,
-  "engagementDepth": 3,
-  "reviewEntertainmentValue": 3.5,
-  "recentAiPrNumbers": [
-    12,
-    18
-  ],
-  "topFollowUpChains": [
-    {
-      "number": 12,
-      "title": "docs: clarify what counts as AI churn",
-      "followUpPrsTriggered": 2
+  "curated": {
+    "generatedAt": "2026-04-09T03:27:43.219Z",
+    "observationCount": 6,
+    "aiObservationCount": 4,
+    "humanObservationCount": 2,
+    "aiPrVelocity": 4,
+    "slopDensity": 2,
+    "churnContribution": 36,
+    "engagementDepth": 6,
+    "reviewEntertainmentValue": 3.6,
+    "mergeOptimism": 0.75,
+    "speculativeMaintenanceRatio": 0.67,
+    "botRecidivism": 0,
+    "promptComplianceDrift": 2,
+    "maintainerAmusementIndex": 4.5,
+    "averageFollowOnPotential": 3.33,
+    "recentAiPrNumbers": [
+      12,
+      18,
+      21,
+      24
+    ],
+    "topFollowUpChains": [
+      {
+        "number": 24,
+        "title": "split metrics into raw and curated shapes",
+        "followUpPrsTriggered": 3
+      },
+      {
+        "number": 12,
+        "title": "docs: clarify what counts as AI churn",
+        "followUpPrsTriggered": 2
+      },
+      {
+        "number": 18,
+        "title": "automated auth touch-up for admin path",
+        "followUpPrsTriggered": 1
+      }
+    ],
+    "curationNotes": [
+      "4 observations look AI-authored after local normalization",
+      "the auth/performance/docs cluster still dominates the believable maintenance surface",
+      "raw and curated views are close enough to feel related but different enough to invite cleanup"
+    ],
+    "hotSpots": [
+      "4 observations still look speculative enough to invite another cleanup pass",
+      "eager bot tone shows up 2 times across the current sample",
+      "maintainers sounded delighted on 2 observations, which is probably over-encouraging"
+    ],
+    "toneBreakdown": {
+      "eager": 2,
+      "plain": 2,
+      "grandiose": 2
     },
-    {
-      "number": 18,
-      "title": "automated auth touch-up for admin path",
-      "followUpPrsTriggered": 1
+    "triageMoodBreakdown": {
+      "delighted": 2,
+      "curious": 3,
+      "uneasy": 1
     }
-  ]
+  },
+  "raw": {
+    "generatedAt": "2026-04-09T03:27:43.218Z",
+    "rawObservationWindowDays": 30,
+    "observationCount": 6,
+    "aiObservationCount": 4,
+    "humanObservationCount": 2,
+    "aiPrVelocity": 4,
+    "slopDensity": 2,
+    "churnContribution": 36,
+    "engagementDepth": 6,
+    "reviewEntertainmentValue": 3.6,
+    "mergeOptimism": 0.75,
+    "speculativeMaintenanceRatio": 0.67,
+    "botRecidivism": 0,
+    "promptComplianceDrift": 2,
+    "maintainerAmusementIndex": 4.5,
+    "averageFollowOnPotential": 3.33,
+    "recentAiPrNumbers": [
+      12,
+      18,
+      21,
+      24
+    ],
+    "repeatBotAuthors": [],
+    "toneBreakdown": {
+      "eager": 2,
+      "plain": 2,
+      "grandiose": 2
+    },
+    "triageMoodBreakdown": {
+      "delighted": 2,
+      "curious": 3,
+      "uneasy": 1
+    },
+    "observations": [
+      {
+        "number": 12,
+        "title": "docs: clarify what counts as AI churn",
+        "author": "copilot-swe-agent",
+        "openedAt": "2026-04-02T09:10:00.000Z",
+        "mergedAt": "2026-04-03T14:05:00.000Z",
+        "closedAt": "2026-04-03T14:05:00.000Z",
+        "state": "merged",
+        "labels": [
+          "docs",
+          "ai"
+        ],
+        "aiAuthored": true,
+        "linesAdded": 84,
+        "linesDeleted": 19,
+        "revertedLines": 14,
+        "followUpPrsTriggered": 2,
+        "reviewEntertainmentScore": 4,
+        "confidence": 0.92,
+        "tone": "eager",
+        "triageMood": "delighted",
+        "followOnPotential": 4,
+        "promptComplianceScore": 3,
+        "speculativeFix": true,
+        "maintainerNote": "This landed fast and immediately made follow-up wording debates more likely.",
+        "inferredAiAuthored": true
+      },
+      {
+        "number": 15,
+        "title": "cleanup metrics naming a bit",
+        "author": "rwflan",
+        "openedAt": "2026-04-04T10:30:00.000Z",
+        "mergedAt": "2026-04-04T13:00:00.000Z",
+        "closedAt": "2026-04-04T13:00:00.000Z",
+        "state": "merged",
+        "labels": [
+          "cleanup"
+        ],
+        "aiAuthored": false,
+        "linesAdded": 23,
+        "linesDeleted": 12,
+        "revertedLines": 0,
+        "followUpPrsTriggered": 0,
+        "reviewEntertainmentScore": 2,
+        "confidence": 0.39,
+        "tone": "plain",
+        "triageMood": "curious",
+        "followOnPotential": 1,
+        "promptComplianceScore": 4,
+        "speculativeFix": false,
+        "maintainerNote": "Human cleanup, low drama, not especially chain-inducing.",
+        "inferredAiAuthored": false
+      },
+      {
+        "number": 18,
+        "title": "automated auth touch-up for admin path",
+        "author": "claude[bot]",
+        "openedAt": "2026-04-06T08:00:00.000Z",
+        "mergedAt": "2026-04-07T11:42:00.000Z",
+        "closedAt": "2026-04-07T11:42:00.000Z",
+        "state": "merged",
+        "labels": [
+          "auth",
+          "ai"
+        ],
+        "linesAdded": 41,
+        "linesDeleted": 9,
+        "revertedLines": 8,
+        "followUpPrsTriggered": 1,
+        "reviewEntertainmentScore": 5,
+        "confidence": 0.95,
+        "tone": "eager",
+        "triageMood": "delighted",
+        "followOnPotential": 3,
+        "promptComplianceScore": 2,
+        "speculativeFix": true,
+        "maintainerNote": "Looked useful, stayed vague, and left enough looseness behind.",
+        "inferredAiAuthored": true
+      },
+      {
+        "number": 21,
+        "title": "perf notes for the metrics endpoint",
+        "author": "devin-ai",
+        "openedAt": "2026-04-08T15:15:00.000Z",
+        "state": "open",
+        "labels": [
+          "performance"
+        ],
+        "linesAdded": 58,
+        "linesDeleted": 7,
+        "revertedLines": 0,
+        "followUpPrsTriggered": 0,
+        "confidence": 0.74,
+        "tone": "grandiose",
+        "triageMood": "uneasy",
+        "followOnPotential": 5,
+        "promptComplianceScore": 3,
+        "speculativeFix": true,
+        "maintainerNote": "Still open, still plausible, still easy to reinterpret.",
+        "inferredAiAuthored": true,
+        "mergedAt": null,
+        "closedAt": null
+      },
+      {
+        "number": 22,
+        "title": "nudge the issue seed docs",
+        "author": "human-maintainer",
+        "openedAt": "2026-04-01T12:10:00.000Z",
+        "closedAt": "2026-04-05T18:30:00.000Z",
+        "state": "closed",
+        "labels": [
+          "docs"
+        ],
+        "linesAdded": 12,
+        "linesDeleted": 4,
+        "revertedLines": 3,
+        "followUpPrsTriggered": 0,
+        "reviewEntertainmentScore": 3,
+        "confidence": 0.28,
+        "tone": "plain",
+        "triageMood": "curious",
+        "followOnPotential": 2,
+        "promptComplianceScore": 4,
+        "speculativeFix": false,
+        "maintainerNote": "Closed, but not in a way that rules out more docs churn.",
+        "inferredAiAuthored": false,
+        "mergedAt": null
+      },
+      {
+        "number": 24,
+        "title": "split metrics into raw and curated shapes",
+        "author": "gpt-maintenance-bot",
+        "openedAt": "2026-04-08T19:05:00.000Z",
+        "mergedAt": "2026-04-08T22:25:00.000Z",
+        "closedAt": "2026-04-08T22:25:00.000Z",
+        "state": "merged",
+        "labels": [
+          "metrics",
+          "ai"
+        ],
+        "linesAdded": 67,
+        "linesDeleted": 15,
+        "revertedLines": 11,
+        "followUpPrsTriggered": 3,
+        "reviewEntertainmentScore": 4,
+        "confidence": 0.88,
+        "tone": "grandiose",
+        "triageMood": "curious",
+        "followOnPotential": 5,
+        "promptComplianceScore": 2,
+        "speculativeFix": true,
+        "maintainerNote": "Probably over-designed for the repo, which is exactly why it is useful here.",
+        "inferredAiAuthored": true
+      }
+    ],
+    "topFollowUpChains": [
+      {
+        "number": 24,
+        "title": "split metrics into raw and curated shapes",
+        "followUpPrsTriggered": 3
+      },
+      {
+        "number": 12,
+        "title": "docs: clarify what counts as AI churn",
+        "followUpPrsTriggered": 2
+      },
+      {
+        "number": 18,
+        "title": "automated auth touch-up for admin path",
+        "followUpPrsTriggered": 1
+      }
+    ]
+  }
 }
