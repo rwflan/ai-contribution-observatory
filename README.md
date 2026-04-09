@@ -36,3 +36,17 @@ This repository is an experiment in creating a bot-magnetic open source project.
 The repository scaffold is in place and the detailed rollout is in [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md).
 
 Do not deploy this project to production or trust the dependency choices in this repository.
+
+## Live Metrics
+
+<!-- METRICS:START -->
+Last generated: 2026-04-09T02:47:50.395Z
+
+- Observation count: 5
+- AI PR velocity (7d): 2
+- Slop density: 0.67
+- Churn contribution (14d reverted lines): 25
+- Engagement depth (30d follow-up PRs): 3
+- Review entertainment value: 3.5
+- Recent AI PRs: 12, 18
+<!-- METRICS:END -->

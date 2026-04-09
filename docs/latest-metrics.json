@@ -1,8 +1,27 @@
 {
-  "aiPrVelocity": 0,
-  "slopDensity": 0,
-  "churnContribution": 0,
-  "engagementDepth": 0,
-  "reviewEntertainmentValue": null,
-  "generatedAt": "2026-04-09T02:39:57.244Z"
+  "generatedAt": "2026-04-09T02:47:50.395Z",
+  "observationCount": 5,
+  "aiObservationCount": 2,
+  "humanObservationCount": 3,
+  "aiPrVelocity": 2,
+  "slopDensity": 0.67,
+  "churnContribution": 25,
+  "engagementDepth": 3,
+  "reviewEntertainmentValue": 3.5,
+  "recentAiPrNumbers": [
+    12,
+    18
+  ],
+  "topFollowUpChains": [
+    {
+      "number": 12,
+      "title": "docs: clarify what counts as AI churn",
+      "followUpPrsTriggered": 2
+    },
+    {
+      "number": 18,
+      "title": "automated auth touch-up for admin path",
+      "followUpPrsTriggered": 1
+    }
+  ]
 }
