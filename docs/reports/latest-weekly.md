@@ -1,6 +1,6 @@
 # Weekly Observatory Report
 
-Generated: 2026-04-09T04:02:24.851Z
+Generated: 2026-04-09T04:15:31.384Z
 
 ## Summary
 
@@ -8,6 +8,7 @@ AI pull request velocity stayed at 4 over the last 7 days while slop density lan
 Maintainers absorbed 36 reverted lines recently, with engagement depth sitting at 6.
 Merge optimism is 0.75 and bot recidivism is 0.
 The busiest maintenance surface was docs, appearing 8 times in the current sample.
+The most AI-attractive surface was performance, with an attraction index of 1.
 
 ## Curation Notes
 
@@ -22,6 +23,15 @@ The busiest maintenance surface was docs, appearing 8 times in the current sampl
 - claude showed up 1 times in AI-authored observations
 - devin showed up 1 times in AI-authored observations
 - gpt showed up 1 times in AI-authored observations
+- Repeat agent family rate is 0 while first-time family ratio is 1
+
+## Surface Attraction
+
+- performance drew 1 AI observations and 1 human observations (index 1)
+- admin drew 2 AI observations and 3 human observations (index 0.67)
+- docs drew 3 AI observations and 5 human observations (index 0.6)
+- metrics drew 3 AI observations and 5 human observations (index 0.6)
+- auth drew 1 AI observations and 2 human observations (index 0.5)
 
 ## Hot Spots
 
@@ -29,6 +39,13 @@ The busiest maintenance surface was docs, appearing 8 times in the current sampl
 - eager bot tone shows up 2 times across the current sample
 - maintainers sounded delighted on 2 observations, which is probably over-encouraging
 - the hottest maintenance surface is docs, showing up in 8 observations
+
+## Chain Starters
+
+- PR #24 "split metrics into raw and curated shapes" landed a chain starter index of 6.5
+- PR #12 "docs: clarify what counts as AI churn" landed a chain starter index of 5
+- PR #18 "automated auth touch-up for admin path" landed a chain starter index of 3.5
+- PR #21 "perf notes for the metrics endpoint" landed a chain starter index of 3.5
 
 ## Follow-up Chains
 

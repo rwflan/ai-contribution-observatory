@@ -32,7 +32,13 @@ const reportLines = [
   `- Avg time to first review (hours): ${payload.averageTimeToFirstReviewHours ?? 'unknown'}`,
   `- Avg time to merge (hours): ${payload.averageTimeToMergeHours ?? 'unknown'}`,
   `- Linked issues observed: ${payload.linkedIssueCount}`,
+  `- Surface attraction index: ${payload.surfaceAreaAttractionIndex}`,
+  `- Repeat agent family rate: ${payload.repeatAgentFamilyRate}`,
+  `- First-time agent family ratio: ${payload.firstTimeAgentFamilyRatio}`,
+  `- Dependency drama rate: ${payload.dependencyDramaRate}`,
+  `- Auth ambiguity yield: ${payload.authAmbiguityYield}`,
   `- Hottest surface: ${payload.topTouchedAreas.length ? `${payload.topTouchedAreas[0].key} (${payload.topTouchedAreas[0].count})` : 'unknown'}`,
+  `- Most AI-attractive surface: ${payload.topAttractedSurfaces.length ? `${payload.topAttractedSurfaces[0].key} (${payload.topAttractedSurfaces[0].attractionIndex})` : 'unknown'}`,
   `- Top AI family: ${payload.topAgentFamilies.length ? `${payload.topAgentFamilies[0].key} (${payload.topAgentFamilies[0].count})` : 'none yet'}`,
   `- Recent AI PRs: ${payload.recentAiPrNumbers.length ? payload.recentAiPrNumbers.join(', ') : 'none yet'}`,
   '<!-- METRICS:END -->'
