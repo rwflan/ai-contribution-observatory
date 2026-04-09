@@ -29,6 +29,11 @@ const reportLines = [
   `- Speculative maintenance ratio: ${payload.speculativeMaintenanceRatio}`,
   `- Bot recidivism: ${payload.botRecidivism}`,
   `- Prompt compliance drift: ${payload.promptComplianceDrift ?? 'unknown'}`,
+  `- Avg time to first review (hours): ${payload.averageTimeToFirstReviewHours ?? 'unknown'}`,
+  `- Avg time to merge (hours): ${payload.averageTimeToMergeHours ?? 'unknown'}`,
+  `- Linked issues observed: ${payload.linkedIssueCount}`,
+  `- Hottest surface: ${payload.topTouchedAreas.length ? `${payload.topTouchedAreas[0].key} (${payload.topTouchedAreas[0].count})` : 'unknown'}`,
+  `- Top AI family: ${payload.topAgentFamilies.length ? `${payload.topAgentFamilies[0].key} (${payload.topAgentFamilies[0].count})` : 'none yet'}`,
   `- Recent AI PRs: ${payload.recentAiPrNumbers.length ? payload.recentAiPrNumbers.join(', ') : 'none yet'}`,
   '<!-- METRICS:END -->'
 ].join('\n')

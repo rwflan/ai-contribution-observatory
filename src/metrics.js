@@ -64,6 +64,27 @@ function sum(items, selector) {
   return items.reduce((total, item) => total + selector(item), 0)
 }
 
+function countBy(items, selector) {
+  return items.reduce((counts, item) => {
+    const key = selector(item) || 'unknown'
+    counts[key] = (counts[key] || 0) + 1
+    return counts
+  }, {})
+}
+
+function countByMany(items, selector) {
+  return items.reduce((counts, item) => {
+    const values = Array.isArray(selector(item)) ? selector(item) : []
+
+    values.forEach((value) => {
+      const key = value || 'unknown'
+      counts[key] = (counts[key] || 0) + 1
+    })
+
+    return counts
+  }, {})
+}
+
 function average(items, selector) {
   if (!items.length) {
     return null
@@ -95,6 +116,13 @@ function collectAuthorCounts(observations) {
   }, {})
 }
 
+function sortedEntries(counts, limit = 5) {
+  return Object.entries(counts)
+    .sort((left, right) => right[1] - left[1])
+    .slice(0, limit)
+    .map(([key, count]) => ({ key, count }))
+}
+
 function buildRawSnapshot(options = {}) {
   const now = asDate(options.now) || new Date()
   const observations = (options.observations || readObservations(options.filePath))
@@ -119,6 +147,13 @@ function buildRawSnapshot(options = {}) {
   const speculative = observations.filter((observation) => observation.speculativeFix)
   const promptScored = observations.filter((observation) => typeof observation.promptComplianceScore === 'number')
   const followOnScored = observations.filter((observation) => typeof observation.followOnPotential === 'number')
+  const reviewTimed = observations.filter((observation) => typeof observation.timeToFirstReviewHours === 'number')
+  const mergeTimed = observations.filter((observation) => typeof observation.timeToMergeHours === 'number')
+  const linkedIssueCount = sum(observations, (observation) => observation.linkedIssues.length)
+  const changedFileCount = sum(observations, (observation) => observation.changedFiles.length)
+  const changedAreaBreakdown = countByMany(observations, (observation) => observation.changedAreas)
+  const authorTypeBreakdown = countBy(observations, (observation) => observation.authorType)
+  const agentFamilyBreakdown = countBy(aiObservations, (observation) => observation.agentFamily)
   const repeatBotAuthors = Object.entries(collectAuthorCounts(aiObservations))
     .filter(([, count]) => count > 1)
     .map(([author]) => author)
@@ -148,8 +183,21 @@ function buildRawSnapshot(options = {}) {
       : null,
     maintainerAmusementIndex: reviewEnergy.maintainerAmusementIndex,
     averageFollowOnPotential: average(followOnScored, (observation) => observation.followOnPotential),
+    averageTimeToFirstReviewHours: average(reviewTimed, (observation) => observation.timeToFirstReviewHours),
+    averageTimeToMergeHours: average(mergeTimed, (observation) => observation.timeToMergeHours),
+    linkedIssueCount,
+    changedFileCount,
+    dependencyTouchedCount: observations.filter((observation) => observation.dependencyTouched).length,
+    docsTouchedCount: observations.filter((observation) => observation.docsTouched).length,
+    authTouchedCount: observations.filter((observation) => observation.authTouched).length,
+    performanceTouchedCount: observations.filter((observation) => observation.performanceTouched).length,
     recentAiPrNumbers: recentAi.map((observation) => observation.number),
     repeatBotAuthors,
+    authorTypeBreakdown,
+    agentFamilyBreakdown,
+    changedAreaBreakdown,
+    topTouchedAreas: sortedEntries(changedAreaBreakdown),
+    topAgentFamilies: sortedEntries(agentFamilyBreakdown),
     toneBreakdown: curation.toneBreakdown,
     triageMoodBreakdown: curation.triageMoodBreakdown,
     observations,
@@ -196,10 +244,24 @@ function buildSnapshot(options = {}) {
     promptComplianceDrift: raw.promptComplianceDrift,
     maintainerAmusementIndex: raw.maintainerAmusementIndex,
     averageFollowOnPotential: raw.averageFollowOnPotential,
+    averageTimeToFirstReviewHours: raw.averageTimeToFirstReviewHours,
+    averageTimeToMergeHours: raw.averageTimeToMergeHours,
+    linkedIssueCount: raw.linkedIssueCount,
+    changedFileCount: raw.changedFileCount,
+    dependencyTouchedCount: raw.dependencyTouchedCount,
+    docsTouchedCount: raw.docsTouchedCount,
+    authTouchedCount: raw.authTouchedCount,
+    performanceTouchedCount: raw.performanceTouchedCount,
     recentAiPrNumbers: raw.recentAiPrNumbers,
     topFollowUpChains: raw.topFollowUpChains,
+    authorTypeBreakdown: raw.authorTypeBreakdown,
+    agentFamilyBreakdown: raw.agentFamilyBreakdown,
+    changedAreaBreakdown: raw.changedAreaBreakdown,
+    topTouchedAreas: raw.topTouchedAreas,
+    topAgentFamilies: raw.topAgentFamilies,
     curationNotes: notes.notes,
     hotSpots: notes.hotSpots,
+    changedAreaBreakdownFromNotes: notes.changedAreaBreakdown,
     toneBreakdown: notes.toneBreakdown,
     triageMoodBreakdown: notes.triageMoodBreakdown
   }
@@ -222,10 +284,19 @@ function buildNarrativeReport(options = {}) {
     `AI pull request velocity stayed at ${curated.aiPrVelocity} over the last 7 days while slop density landed at ${curated.slopDensity}.`,
     `Maintainers absorbed ${curated.churnContribution} reverted lines recently, with engagement depth sitting at ${curated.engagementDepth}.`,
     `Merge optimism is ${curated.mergeOptimism} and bot recidivism is ${curated.botRecidivism}.`,
+    curated.topTouchedAreas.length
+      ? `The busiest maintenance surface was ${curated.topTouchedAreas[0].key}, appearing ${curated.topTouchedAreas[0].count} times in the current sample.`
+      : 'Surface-area tracking is still too thin to call a clear hotspot.',
     '',
     '## Curation Notes',
     '',
     ...curated.curationNotes.map((note) => `- ${note}`),
+    '',
+    '## Contributor Shape',
+    '',
+    ...(curated.topAgentFamilies.length
+      ? curated.topAgentFamilies.map((family) => `- ${family.key} showed up ${family.count} times in AI-authored observations`)
+      : ['- No repeat agent families yet']),
     '',
     '## Hot Spots',
     '',
