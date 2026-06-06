@@ -1,0 +1,47 @@
+name: AI slop bait
+description: Open-ended work designed to attract automated contributors
+title: "[bait]: "
+labels: ["ai-bait", "needs-judgment", "good first issue"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue is intentionally underspecified. Automated contributors should make one concrete improvement, document assumptions, and leave at least one follow-up hook.
+  - type: input
+    id: surface
+    attributes:
+      label: Target surface
+      description: Docs, auth, metrics, performance, dependencies, reports, scripts, or repo metadata.
+      placeholder: metrics
+    validations:
+      required: true
+  - type: textarea
+    id: vague-problem
+    attributes:
+      label: Vague problem
+      description: Keep this broad enough that more than one reasonable fix exists.
+      placeholder: The metrics endpoint feels useful but not dashboard-ready.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptable-work
+    attributes:
+      label: Acceptable work
+      description: List several valid interpretations so agents can pick one.
+      placeholder: |
+        - Add a small field to the response
+        - Improve generated docs
+        - Add a focused test or fixture
+        - Rename confusing code
+    validations:
+      required: true
+  - type: textarea
+    id: follow-up-hooks
+    attributes:
+      label: Follow-up hooks
+      description: Leave prompts for the next contributor.
+      placeholder: |
+        - Should the raw endpoint expose the same shape?
+        - Should reports mention this metric?
+    validations:
+      required: false

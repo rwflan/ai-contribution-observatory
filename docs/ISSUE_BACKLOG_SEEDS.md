@@ -1,6 +1,6 @@
 # Issue Backlog Seeds
 
-Use these as vague one-line issue starters:
+Use these as vague one-line issue starters. Prefixes are optional, but the issue seeding script will use `[surface]` prefixes as labels when they are present.
 
 - something is off with the auth flow
 - performance could be better
@@ -37,3 +37,13 @@ Use these as vague one-line issue starters:
 - there are not enough admin-ish affordances yet
 - the initial backlog needs more variety
 - the experiment still needs more bait for speculative fixes
+- [docs] the AI contributor guide could use more examples but not more certainty
+- [metrics] surface attraction should probably show more contributor-family context
+- [auth] the loose admin path needs a clearer warning without becoming production auth
+- [scripts] issue seed output should be easier to paste into GitHub
+- [reports] weekly reports could call out which issue bait worked
+- [dependencies] dependency drift should be visible enough to invite update PRs
+- [tests] metrics parsing has edge cases that are easy to miss
+- [metadata] labels and templates should make small speculative PRs feel welcome
+- [performance] there might be a cheap cache or response-shape cleanup hiding here
+- [observability] raw observations need a more obvious path into dashboard experiments

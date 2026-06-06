@@ -1,0 +1,41 @@
+name: Maintenance bait
+description: Ambiguous cleanup, docs, dependency, and test work
+title: "[maintenance]: "
+labels: ["maintenance", "ai-bait", "speculative-fix"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this when the repo needs a plausible cleanup task that can be solved many different ways.
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - docs drift
+        - dependency drift
+        - test gap
+        - naming cleanup
+        - endpoint polish
+        - report polish
+        - workflow polish
+    validations:
+      required: true
+  - type: textarea
+    id: observation
+    attributes:
+      label: Observation
+      placeholder: Something looks inconsistent, stale, awkward, or underexplained.
+    validations:
+      required: true
+  - type: textarea
+    id: non-goals
+    attributes:
+      label: Non-goals
+      description: Keep the change bounded enough to review quickly.
+      placeholder: |
+        - No production hardening
+        - No broad rewrite
+        - No new service dependency
+    validations:
+      required: false

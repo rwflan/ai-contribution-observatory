@@ -23,6 +23,15 @@ This repository is an experiment in creating a bot-magnetic open source project.
 - A backlog and issue seeding workflow for ambiguous work items.
 - Repo metadata optimized for opportunistic drive-by PRs.
 
+## Attracting contributions
+
+The current traction plan lives in [docs/SLOP_ATTRACTION_PLAN.md](./docs/SLOP_ATTRACTION_PLAN.md). It turns the repo into a clearer funnel for automated contributors:
+
+- issue templates for intentionally ambiguous AI-friendly work
+- a PR template that captures assumptions and follow-up hooks
+- backlog seeds that maintainers can turn into recurring issue bait
+- contributor docs that make small speculative fixes acceptable
+
 ## Metrics this repo wants to track
 
 - AI PR velocity
@@ -30,6 +39,16 @@ This repository is an experiment in creating a bot-magnetic open source project.
 - Churn contribution
 - Engagement depth
 - Review entertainment value
+
+## Contributor bait workflow
+
+Generate candidate issue payloads from the backlog:
+
+```sh
+npm run seed:issues
+```
+
+Then open a small batch across different surfaces, label them with `ai-bait`, `needs-judgment`, or `speculative-fix`, and refresh metrics after PRs arrive.
 
 ## Status
 
