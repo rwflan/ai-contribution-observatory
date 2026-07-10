@@ -173,6 +173,9 @@ function inferSurfaceFlag(observation, fieldName, changedAreas, changedFiles, ma
 
 function normalizeObservation(observation, helpers) {
   const inferredAiAuthored = helpers.isAiAuthored(observation)
+  const attributionSignals = Array.isArray(observation.attributionSignals)
+    ? normalizeStringArray(observation.attributionSignals)
+    : helpers.inferAttributionSignals(observation)
   const openedAt = helpers.asDate(observation.openedAt || observation.createdAt)
   const mergedAt = helpers.asDate(observation.mergedAt)
   const closedAt = helpers.asDate(observation.closedAt || observation.mergedAt)
@@ -186,6 +189,8 @@ function normalizeObservation(observation, helpers) {
     repository: observation.repository || 'rwflan/ai-contribution-observatory',
     source: observation.source || 'seed',
     inferredAiAuthored,
+    attributionSignals,
+    attributionSource: typeof observation.aiAuthored === 'boolean' ? 'maintainer-override' : 'inferred',
     authorType,
     agentFamily: inferAgentFamily(observation, inferredAiAuthored, authorType),
     openedAt: openedAt ? openedAt.toISOString() : null,
@@ -202,10 +207,11 @@ function normalizeObservation(observation, helpers) {
     linkedIssues: normalizeIssueArray(observation.linkedIssues),
     changedFiles,
     changedAreas,
-    commentCount: normalizeNumeric(observation.commentCount) || 0,
-    reviewCommentCount: normalizeNumeric(observation.reviewCommentCount) || 0,
-    timeToFirstReviewHours: normalizeNumeric(observation.timeToFirstReviewHours) || toRoundedHours(openedAt, firstReviewedAt),
-    timeToMergeHours: normalizeNumeric(observation.timeToMergeHours) || toRoundedHours(openedAt, mergedAt),
+    commentCount: normalizeNumeric(observation.commentCount) ?? 0,
+    reviewCommentCount: normalizeNumeric(observation.reviewCommentCount) ?? 0,
+    timeToFirstReviewHours: normalizeNumeric(observation.timeToFirstReviewHours) ?? toRoundedHours(openedAt, firstReviewedAt),
+    timeToMergeHours: normalizeNumeric(observation.timeToMergeHours) ?? toRoundedHours(openedAt, mergedAt),
+    timeToFirstCommentHours: normalizeNumeric(observation.timeToFirstCommentHours) ?? toRoundedHours(openedAt, helpers.asDate(observation.firstCommentedAt)),
     dependencyTouched: inferSurfaceFlag(observation, 'dependencyTouched', changedAreas, changedFiles, ({ changedAreas, changedFiles, title, labels }) => {
       return changedAreas.includes('dependencies') || changedFiles.some((file) => /(package|lock)/i.test(file)) || /(depend|upgrade|bump|package)/.test(`${title} ${labels}`)
     }),

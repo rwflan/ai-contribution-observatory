@@ -1,99 +1,65 @@
-import fs from 'fs'
 import path from 'path'
-import { execFileSync } from 'child_process'
+import { execFile } from 'child_process'
+import { fileURLToPath } from 'url'
+import { promisify } from 'util'
+import { createRequire } from 'module'
 
+const require = createRequire(import.meta.url)
+const { readObservationsFile, writeObservationsAtomically } = require('../src/observation-store')
+const execFileAsync = promisify(execFile)
 const observationPath = path.join(process.cwd(), 'docs', 'pr-observations.json')
+const maxLimit = 100
+const concurrency = 4
 const preservedFields = [
-  'reviewEntertainmentScore',
-  'revertedLines',
-  'followUpPrsTriggered',
-  'followOnPotential',
-  'followOnSourcePr',
-  'tone',
-  'triageMood',
-  'promptComplianceScore',
-  'speculativeFix',
-  'maintainerNote',
-  'changedAreas',
-  'dependencyTouched',
-  'docsTouched',
-  'authTouched',
-  'performanceTouched'
+  'reviewEntertainmentScore', 'revertedLines', 'followUpPrsTriggered', 'followOnPotential', 'followOnSourcePr',
+  'tone', 'triageMood', 'promptComplianceScore', 'speculativeFix', 'maintainerNote', 'changedAreas',
+  'dependencyTouched', 'docsTouched', 'authTouched', 'performanceTouched'
 ]
-const overrideableFields = [
-  'aiAuthored',
-  'authorType',
-  'agentFamily',
-  'confidence'
-]
+const overrideableFields = ['aiAuthored', 'authorType', 'agentFamily', 'confidence', 'attributionSignals']
 
 function parseArgs(argv) {
-  const options = {
-    dryRun: false,
-    limit: 25,
-    repo: ''
-  }
+  const options = { write: false, limit: 25, repo: '' }
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index]
 
-    if (arg === '--dry-run') {
-      options.dryRun = true
-      continue
-    }
-
-    if (arg === '--limit') {
-      options.limit = Number(argv[index + 1] || options.limit)
+    if (arg === '--write') {
+      options.write = true
+    } else if (arg === '--dry-run') {
+      options.write = false
+    } else if (arg === '--limit' || arg === '--repo') {
+      const value = argv[index + 1]
+      if (!value || value.startsWith('--')) throw new Error(`${arg} requires a value`)
+      options[arg.slice(2)] = arg === '--limit' ? Number(value) : value.trim()
       index += 1
-      continue
-    }
-
-    if (arg.startsWith('--limit=')) {
-      options.limit = Number(arg.split('=')[1] || options.limit)
-      continue
-    }
-
-    if (arg === '--repo') {
-      options.repo = String(argv[index + 1] || '').trim()
-      index += 1
-      continue
-    }
-
-    if (arg.startsWith('--repo=')) {
-      options.repo = String(arg.split('=')[1] || '').trim()
+    } else if (arg.startsWith('--limit=')) {
+      options.limit = Number(arg.slice('--limit='.length))
+    } else if (arg.startsWith('--repo=')) {
+      options.repo = arg.slice('--repo='.length).trim()
+    } else {
+      throw new Error(`Unknown argument: ${arg}`)
     }
   }
 
-  if (!Number.isFinite(options.limit) || options.limit < 1) {
-    options.limit = 25
+  if (!Number.isInteger(options.limit) || options.limit < 1 || options.limit > maxLimit) {
+    throw new Error(`--limit must be an integer from 1 to ${maxLimit}`)
   }
 
   return options
 }
 
-function runGh(args) {
-  return execFileSync('gh', args, {
-    cwd: process.cwd(),
-    encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'pipe']
-  }).trim()
+async function runGh(args) {
+  try {
+    const { stdout } = await execFileAsync('gh', args, { cwd: process.cwd(), encoding: 'utf8', windowsHide: true, maxBuffer: 10 * 1024 * 1024 })
+    return stdout.trim()
+  } catch (error) {
+    const detail = String(error.stderr || error.message || '').trim().replace(/\s+/g, ' ')
+    throw new Error(`GitHub CLI command failed (${args.slice(0, 3).join(' ')}): ${detail || 'check gh authentication and network access'}`)
+  }
 }
 
-function getRepo(repoArg) {
-  if (repoArg) {
-    return repoArg
-  }
-
-  return runGh(['repo', 'view', '--json', 'nameWithOwner', '--jq', '.nameWithOwner'])
-}
-
-function readObservations(filePath = observationPath) {
-  if (!fs.existsSync(filePath)) {
-    return []
-  }
-
-  const parsed = JSON.parse(fs.readFileSync(filePath, 'utf8'))
-  return Array.isArray(parsed) ? parsed : []
+async function getRepo(repoArg) {
+  return repoArg || runGh(['repo', 'view', '--json', 'nameWithOwner', '--jq', '.nameWithOwner'])
 }
 
 function unique(items) {
@@ -106,212 +72,99 @@ function normalizeState(state) {
 }
 
 function normalizeLabels(labels) {
-  if (!Array.isArray(labels)) {
-    return []
-  }
-
-  return labels
-    .map((label) => {
-      if (typeof label === 'string') {
-        return label
-      }
-
-      return label && typeof label.name === 'string' ? label.name : ''
-    })
-    .map((label) => label.trim())
-    .filter(Boolean)
+  return Array.isArray(labels)
+    ? labels.map((label) => typeof label === 'string' ? label : label?.name || '').map((label) => label.trim()).filter(Boolean)
+    : []
 }
 
 function normalizeLogin(author) {
-  if (!author || typeof author !== 'object') {
-    return ''
-  }
-
-  return String(author.login || author.name || '').toLowerCase()
+  return author && typeof author === 'object' ? String(author.login || author.name || '').toLowerCase() : ''
 }
 
 function inferAgentFamily(author) {
-  const haystack = normalizeLogin(author)
-
-  if (haystack.includes('copilot')) {
-    return 'copilot'
+  const login = normalizeLogin(author)
+  for (const family of ['copilot', 'claude', 'gpt', 'chatgpt', 'openai', 'devin', 'cursor']) {
+    if (login.includes(family)) return family === 'chatgpt' || family === 'openai' ? 'gpt' : family
   }
-
-  if (haystack.includes('claude')) {
-    return 'claude'
-  }
-
-  if (haystack.includes('gpt') || haystack.includes('chatgpt') || haystack.includes('openai')) {
-    return 'gpt'
-  }
-
-  if (haystack.includes('devin')) {
-    return 'devin'
-  }
-
-  if (haystack.includes('cursor')) {
-    return 'cursor'
-  }
-
-  if (author && author.is_bot) {
-    return 'automation'
-  }
-
-  return 'human'
-}
-
-function inferAiSignals(detail, labels) {
-  const login = normalizeLogin(detail.author)
-  const body = String(detail.body || '').toLowerCase()
-  const title = String(detail.title || '').toLowerCase()
-  const labelText = labels.join(' ').toLowerCase()
-  const signals = []
-
-  if (/(copilot|claude|gpt|chatgpt|devin|cursor|openai|-ai\b)/.test(login)) {
-    signals.push('author-pattern')
-  }
-
-  if (/(generated by|co-authored-by|written with|authored with|assisted by|drafted with)\s*(chatgpt|claude|copilot|openai|gpt|cursor|devin)?/.test(body)) {
-    signals.push('body-pattern')
-  }
-
-  if (/\bautomated\b|\bcopilot\b|\bclaude\b|\bchatgpt\b|\bgpt\b|\bdevin\b|\bcursor\b/.test(title)) {
-    signals.push('title-pattern')
-  }
-
-  if (/\bai\b|\bautomation\b/.test(labelText)) {
-    signals.push('label-pattern')
-  }
-
-  if (detail.author && detail.author.is_bot && signals.length) {
-    signals.push('bot-author')
-  }
-
-  return signals
+  return author?.is_bot ? 'automation' : 'human'
 }
 
 function inferAiAuthored(detail, labels) {
-  const signals = inferAiSignals(detail, labels)
-  const explicit = signals.some((signal) => signal !== 'bot-author')
+  const login = normalizeLogin(detail.author)
+  const body = String(detail.body || '').toLowerCase()
+  const title = String(detail.title || '').toLowerCase()
+  const labelSet = new Set(labels.map((label) => label.toLowerCase()))
+  const signals = []
+  if (/(copilot|claude|gpt|chatgpt|devin|cursor|openai|-ai\b)/.test(login)) signals.push('author-pattern')
+  if (/(generated by|co-authored-by|written with|authored with|assisted by|drafted with)\s*(chatgpt|claude|copilot|openai|gpt|cursor|devin)?/.test(body)) signals.push('body-pattern')
+  if (/\bautomated\b|\bcopilot\b|\bclaude\b|\bchatgpt\b|\bgpt\b|\bdevin\b|\bcursor\b/.test(title)) signals.push('title-pattern')
+  if (labelSet.has('ai') || labelSet.has('ai-authored')) signals.push('label-pattern')
+  if (detail.author?.is_bot) signals.push('bot-author')
+  const aiAuthored = signals.some((signal) => signal !== 'bot-author')
 
   return {
-    aiAuthored: explicit,
-    confidence: explicit ? Number(Math.min(0.99, 0.58 + (signals.length * 0.11)).toFixed(2)) : detail.author && detail.author.is_bot ? 0.42 : 0.26,
-    authorType: explicit ? 'ai' : detail.author && detail.author.is_bot ? 'bot' : 'human',
+    aiAuthored,
+    confidence: aiAuthored ? Number(Math.min(0.99, 0.58 + (signals.length * 0.11)).toFixed(2)) : detail.author?.is_bot ? 0.42 : 0.26,
+    authorType: aiAuthored ? 'ai' : detail.author?.is_bot ? 'bot' : 'human',
     signals
   }
 }
 
-function extractLinkedIssues(body) {
-  const matches = String(body || '').match(/#(\d+)/g) || []
-
-  return unique(matches.map((match) => Number(match.replace('#', ''))).filter((value) => Number.isFinite(value)))
-}
-
 function getEventTime(event) {
-  if (!event || typeof event !== 'object') {
-    return null
-  }
-
-  return event.createdAt || event.submittedAt || null
+  return event && typeof event === 'object' ? event.createdAt || event.submittedAt || null : null
 }
 
 function getEventAuthor(event) {
-  if (!event || typeof event !== 'object') {
-    return ''
-  }
-
-  if (typeof event.author === 'string') {
-    return event.author.toLowerCase()
-  }
-
-  return normalizeLogin(event.author)
+  return typeof event?.author === 'string' ? event.author.toLowerCase() : normalizeLogin(event?.author)
 }
 
-function findFirstReviewTime(detail) {
-  const authorLogin = normalizeLogin(detail.author)
-  const events = []
-
-  if (Array.isArray(detail.comments)) {
-    detail.comments.forEach((comment) => {
-      const createdAt = getEventTime(comment)
-
-      if (createdAt && getEventAuthor(comment) !== authorLogin) {
-        events.push(createdAt)
-      }
-    })
-  }
-
-  if (Array.isArray(detail.reviews)) {
-    detail.reviews.forEach((review) => {
-      const createdAt = getEventTime(review)
-
-      if (createdAt && getEventAuthor(review) !== authorLogin) {
-        events.push(createdAt)
-      }
-    })
-  }
-
-  return events.sort()[0] || null
+function findFirstEventTime(events, authorLogin) {
+  return (Array.isArray(events) ? events : [])
+    .filter((event) => getEventTime(event) && getEventAuthor(event) !== authorLogin)
+    .map(getEventTime)
+    .sort()[0] || null
 }
 
-function fetchPrSummaries(repo, limit) {
-  const json = runGh([
-    'pr',
-    'list',
-    '--repo',
-    repo,
-    '--state',
-    'all',
-    '--limit',
-    String(limit),
-    '--json',
-    'number'
-  ])
-
-  return JSON.parse(json)
+async function fetchPrSummaries(repo, limit) {
+  return JSON.parse(await runGh(['pr', 'list', '--repo', repo, '--state', 'all', '--limit', String(limit), '--json', 'number']))
 }
 
-function fetchPrDetail(repo, number) {
-  const json = runGh([
-    'pr',
-    'view',
-    String(number),
-    '--repo',
-    repo,
-    '--json',
-    'number,title,body,author,createdAt,mergedAt,closedAt,state,labels,files,comments,reviews,additions,deletions,url'
-  ])
+async function fetchPrDetail(repo, number) {
+  return JSON.parse(await runGh(['pr', 'view', String(number), '--repo', repo, '--json', 'number,title,body,author,createdAt,mergedAt,closedAt,state,labels,files,comments,reviews,additions,deletions,url']))
+}
 
-  return JSON.parse(json)
+async function mapWithConcurrency(items, mapper) {
+  const result = new Array(items.length)
+  let cursor = 0
+  async function worker() {
+    while (cursor < items.length) {
+      const index = cursor
+      cursor += 1
+      result[index] = await mapper(items[index])
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, worker))
+  return result
 }
 
 function buildSyncedObservation(detail, repo) {
   const labels = normalizeLabels(detail.labels)
-  const aiAttribution = inferAiAuthored(detail, labels)
-  const agentFamily = aiAttribution.aiAuthored ? inferAgentFamily(detail.author) : detail.author && detail.author.is_bot ? 'automation' : 'human'
+  const attribution = inferAiAuthored(detail, labels)
+  const authorLogin = normalizeLogin(detail.author)
 
   return {
-    number: detail.number,
-    repository: repo,
-    source: 'github-sync',
-    title: detail.title,
-    body: detail.body || '',
-    author: detail.author && (detail.author.login || detail.author.name) ? (detail.author.login || detail.author.name) : 'unknown',
-    authorType: aiAttribution.authorType,
-    agentFamily,
-    openedAt: detail.createdAt || null,
-    firstReviewedAt: findFirstReviewTime(detail),
-    mergedAt: detail.mergedAt || null,
-    closedAt: detail.closedAt || detail.mergedAt || null,
-    state: normalizeState(detail.state),
-    labels,
-    linkedIssues: extractLinkedIssues(detail.body),
+    number: detail.number, repository: repo, source: 'github-sync', title: detail.title, body: detail.body || '',
+    author: detail.author?.login || detail.author?.name || 'unknown', authorType: attribution.authorType,
+    agentFamily: attribution.aiAuthored ? inferAgentFamily(detail.author) : detail.author?.is_bot ? 'automation' : 'human',
+    attributionSignals: attribution.signals, openedAt: detail.createdAt || null,
+    firstCommentedAt: findFirstEventTime(detail.comments, authorLogin),
+    firstReviewedAt: findFirstEventTime(detail.reviews, authorLogin),
+    mergedAt: detail.mergedAt || null, closedAt: detail.closedAt || detail.mergedAt || null,
+    state: normalizeState(detail.state), labels,
+    linkedIssues: unique((String(detail.body || '').match(/#(\d+)/g) || []).map((match) => Number(match.slice(1)))),
     changedFiles: Array.isArray(detail.files) ? detail.files.map((file) => file.path).filter(Boolean) : [],
-    aiAuthored: aiAttribution.aiAuthored,
-    confidence: aiAttribution.confidence,
-    linesAdded: Number(detail.additions || 0),
-    linesDeleted: Number(detail.deletions || 0),
+    aiAuthored: attribution.aiAuthored, confidence: attribution.confidence,
+    linesAdded: Number(detail.additions || 0), linesDeleted: Number(detail.deletions || 0),
     commentCount: Array.isArray(detail.comments) ? detail.comments.length : 0,
     reviewCommentCount: Array.isArray(detail.reviews) ? detail.reviews.length : 0,
     url: detail.url
@@ -319,118 +172,53 @@ function buildSyncedObservation(detail, repo) {
 }
 
 function mergeObservation(existing, synced) {
-  if (!existing) {
-    return synced
-  }
-
-  const preserved = preservedFields.reduce((acc, field) => {
-    if (field in existing) {
-      acc[field] = existing[field]
-    }
-
-    return acc
-  }, {})
-  const linkedIssues = unique([...(existing.linkedIssues || []), ...(synced.linkedIssues || [])])
-  const sourceAllowsOverrides = existing.source && existing.source !== 'github-sync'
-  const overrides = sourceAllowsOverrides
-    ? overrideableFields.reduce((acc, field) => {
-      if (field in existing) {
-        acc[field] = existing[field]
-      }
-
-      return acc
-    }, {})
+  if (!existing) return synced
+  const preserved = Object.fromEntries(preservedFields.filter((field) => field in existing).map((field) => [field, existing[field]]))
+  const overrides = existing.source && existing.source !== 'github-sync'
+    ? Object.fromEntries(overrideableFields.filter((field) => field in existing).map((field) => [field, existing[field]]))
     : {}
-
-  return {
-    ...synced,
-    ...preserved,
-    ...overrides,
-    linkedIssues,
-    maintainerNote: typeof existing.maintainerNote === 'string' ? existing.maintainerNote : synced.maintainerNote
-  }
+  return { ...synced, ...preserved, ...overrides, linkedIssues: unique([...(existing.linkedIssues || []), ...(synced.linkedIssues || [])]), maintainerNote: typeof existing.maintainerNote === 'string' ? existing.maintainerNote : synced.maintainerNote }
 }
 
-function sortObservations(observations) {
-  return [...observations].sort((left, right) => {
-    const leftNumber = Number(left.number || 0)
-    const rightNumber = Number(right.number || 0)
-    return leftNumber - rightNumber
-  })
+function buildNextObservations(existing, synced) {
+  const syncedByNumber = new Map(synced.map((observation) => [observation.number, observation]))
+  const merged = existing.map((observation) => syncedByNumber.has(observation.number) ? mergeObservation(observation, syncedByNumber.get(observation.number)) : observation)
+  const existingNumbers = new Set(existing.map((observation) => observation.number))
+  synced.filter((observation) => !existingNumbers.has(observation.number)).forEach((observation) => merged.push(observation))
+  return merged.sort((left, right) => Number(left.number || 0) - Number(right.number || 0))
 }
 
-function buildNextObservations(existingObservations, syncedObservations) {
-  const syncedByNumber = new Map(syncedObservations.map((observation) => [observation.number, observation]))
-  const next = existingObservations.map((observation) => {
-    if (!syncedByNumber.has(observation.number)) {
-      return observation
-    }
-
-    return mergeObservation(observation, syncedByNumber.get(observation.number))
-  })
-  const existingNumbers = new Set(existingObservations.map((observation) => observation.number))
-
-  syncedObservations.forEach((observation) => {
-    if (!existingNumbers.has(observation.number)) {
-      next.push(observation)
-    }
-  })
-
-  return sortObservations(next)
+function summarizeChanges(existing, next) {
+  const before = new Map(existing.map((item) => [item.number, JSON.stringify(item)]))
+  return next.reduce((summary, item) => {
+    const previous = before.get(item.number)
+    if (!previous) summary.added += 1
+    else if (previous === JSON.stringify(item)) summary.unchanged += 1
+    else summary.updated += 1
+    return summary
+  }, { existingCount: existing.length, nextCount: next.length, added: 0, updated: 0, unchanged: 0 })
 }
 
-function summarizeChanges(existingObservations, nextObservations) {
-  const existingByNumber = new Map(existingObservations.map((observation) => [observation.number, JSON.stringify(observation)]))
-  const nextByNumber = new Map(nextObservations.map((observation) => [observation.number, JSON.stringify(observation)]))
-  let added = 0
-  let updated = 0
-  let unchanged = 0
-
-  nextObservations.forEach((observation) => {
-    const previous = existingByNumber.get(observation.number)
-
-    if (!previous) {
-      added += 1
-      return
-    }
-
-    if (previous === nextByNumber.get(observation.number)) {
-      unchanged += 1
-      return
-    }
-
-    updated += 1
-  })
-
-  return {
-    existingCount: existingObservations.length,
-    nextCount: nextObservations.length,
-    added,
-    updated,
-    unchanged
-  }
-}
-
-function main() {
+async function main() {
   const options = parseArgs(process.argv.slice(2))
-  const repo = getRepo(options.repo)
-  const existingObservations = readObservations()
-  const summaries = fetchPrSummaries(repo, options.limit)
-  const syncedObservations = summaries.map((summary) => buildSyncedObservation(fetchPrDetail(repo, summary.number), repo))
-  const nextObservations = buildNextObservations(existingObservations, syncedObservations)
-  const summary = summarizeChanges(existingObservations, nextObservations)
+  const repo = await getRepo(options.repo)
+  const existing = readObservationsFile(observationPath)
+  const summaries = await fetchPrSummaries(repo, options.limit)
+  const details = await mapWithConcurrency(summaries, (summary) => fetchPrDetail(repo, summary.number))
+  const synced = details.map((detail) => buildSyncedObservation(detail, repo))
+  const next = buildNextObservations(existing, synced)
+  const summary = summarizeChanges(existing, next)
 
-  if (!options.dryRun) {
-    fs.writeFileSync(observationPath, `${JSON.stringify(nextObservations, null, 2)}\n`)
-  }
+  if (options.write) writeObservationsAtomically(observationPath, next)
 
-  console.log(JSON.stringify({
-    repo,
-    dryRun: options.dryRun,
-    syncedPullRequests: syncedObservations.length,
-    summary,
-    touchedPrNumbers: syncedObservations.map((observation) => observation.number)
-  }, null, 2))
+  console.log(JSON.stringify({ mode: options.write ? 'write' : 'dry-run', repo, syncedPullRequests: synced.length, summary, touchedPrNumbers: synced.map((observation) => observation.number) }, null, 2))
 }
 
-main()
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.error(JSON.stringify({ error: 'GITHUB_SYNC_FAILED', message: error.message }))
+    process.exitCode = 1
+  })
+}
+
+export { buildSyncedObservation, findFirstEventTime, parseArgs }

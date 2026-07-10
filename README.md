@@ -19,7 +19,7 @@ This repository is an experiment in creating a bot-magnetic open source project.
 ## Planned application shape
 
 - A tiny HTTP service that exposes AI contribution metrics.
-- A loose auth layer for admin-ish endpoints.
+- A local-first restricted diagnostics layer for admin endpoints.
 - A backlog and issue seeding workflow for ambiguous work items.
 - Repo metadata optimized for opportunistic drive-by PRs.
 
@@ -54,7 +54,18 @@ Then open a small batch across different surfaces, label them with `ai-bait`, `n
 
 The repository scaffold is in place, the original repo framing lives in [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md), and the current execution roadmap lives in [docs/IMPLEMENTATION_ROADMAP.md](./docs/IMPLEMENTATION_ROADMAP.md).
 
-Do not deploy this project to production or trust the dependency choices in this repository.
+This remains an experiment, not a production service. It now has a dependency-free runtime and binds to loopback by default; set `OBSERVATORY_HOST` and an admin token deliberately if you need another deployment shape.
+
+## Running and verification
+
+```sh
+npm start
+npm test
+npm run check
+npm run sync:github:dry-run
+```
+
+GitHub sync is non-mutating by default. Use `npm run sync:github:write` only when you intend to update `docs/pr-observations.json`. Restricted API endpoints require `OBSERVATORY_ADMIN_TOKEN` and the `X-Observatory-Token` request header. See [docs/api-draft.md](./docs/api-draft.md) for the complete contract.
 
 ## Maintainer Mood
 
@@ -65,13 +76,13 @@ Do not deploy this project to production or trust the dependency choices in this
 ## Live Metrics
 
 <!-- METRICS:START -->
-Last generated: 2026-04-09T04:15:31.384Z
+Last generated: 2026-07-10T14:23:52.783Z
 
 - Observation count: 11
-- AI PR velocity (7d): 4
+- AI PR velocity (7d): 0
 - Slop density: 0.57
-- Churn contribution (14d reverted lines): 36
-- Engagement depth (30d follow-up PRs): 6
+- Churn contribution (14d reverted lines): 0
+- Engagement depth (30d follow-up PRs): 0
 - Review entertainment value: 3.6
 - Merge optimism: 0.75
 - Speculative maintenance ratio: 0.36
@@ -88,5 +99,5 @@ Last generated: 2026-04-09T04:15:31.384Z
 - Hottest surface: docs (8)
 - Most AI-attractive surface: performance (1)
 - Top AI family: copilot (1)
-- Recent AI PRs: 12, 18, 21, 24
+- Recent AI PRs: none yet
 <!-- METRICS:END -->

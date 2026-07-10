@@ -1,21 +1,28 @@
+const crypto = require('crypto')
+
 function extractToken(req) {
   const headerToken = req.headers['x-observatory-token']
+  return typeof headerToken === 'string' ? headerToken : ''
+}
 
-  if (headerToken) {
-    return String(headerToken)
-  }
+function tokensMatch(provided, expected) {
+  const providedBuffer = Buffer.from(provided)
+  const expectedBuffer = Buffer.from(expected)
 
-  const url = new URL(req.url, 'http://localhost')
-  return url.searchParams.get('token')
+  return providedBuffer.length === expectedBuffer.length && crypto.timingSafeEqual(providedBuffer, expectedBuffer)
 }
 
 function checkAdminAccess(req) {
-  const expected = process.env.OBSERVATORY_ADMIN_TOKEN || 'let-me-in'
+  const expected = process.env.OBSERVATORY_ADMIN_TOKEN
   const token = extractToken(req)
 
+  if (!expected) {
+    return { ok: false, mode: 'disabled' }
+  }
+
   return {
-    ok: token === expected,
-    mode: token ? 'provided-token' : 'fallback-deny'
+    ok: tokensMatch(token, expected),
+    mode: token ? 'provided-token' : 'missing-token'
   }
 }
 
