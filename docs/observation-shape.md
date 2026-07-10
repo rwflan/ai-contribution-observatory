@@ -24,16 +24,20 @@ The file is intentionally lightweight, but the shape is now rich enough to descr
 - `authorType`: broad category like `human`, `bot`, or `ai`
 - `agentFamily`: normalized contributor family such as `copilot`, `claude`, `gpt`, or `devin`
 - `confidence`: maintainer confidence in the AI attribution
+- `attributionSignals`: evidence used by sync or local attribution, such as `author-pattern`, `body-pattern`, `title-pattern`, `label-pattern`, or `bot-author`
+- `attributionSource`: `maintainer-override` or `inferred`, so consumers can distinguish recorded intent from a heuristic
 
 ## Churn And Review Fields
 
 - `firstReviewedAt`
+- `firstCommentedAt`
 - `linesAdded`
 - `linesDeleted`
 - `revertedLines`
 - `commentCount`
 - `reviewCommentCount`
 - `timeToFirstReviewHours`
+- `timeToFirstCommentHours`
 - `timeToMergeHours`
 - `reviewEntertainmentScore`
 - `triageMood`
@@ -61,5 +65,7 @@ The file is intentionally lightweight, but the shape is now rich enough to descr
 ## Compatibility Notes
 
 - Older observations may omit any of the newer fields.
-- Normalization fills in missing defaults rather than rejecting the record.
-- The schema is permissive on purpose because future GitHub sync payloads will arrive with uneven detail.
+- The top-level document must be a JSON array and each record must be an object. When present, `number` must be numeric and list fields must be arrays or comma-separated strings.
+- Normalization fills in compatible missing defaults, but malformed source data is rejected at the file boundary and leaves the last valid file intact during sync.
+- `timeToFirstReviewHours` is derived only from formal review events. Comments are recorded separately so dashboard consumers can choose the metric they need.
+- Generic automation is not automatically AI-authored. Preserve explicit maintainer overrides and inspect `attributionSignals` before relying on inferred attribution.
