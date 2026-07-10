@@ -211,6 +211,26 @@ function buildChainStarterSummary(aiObservations) {
     .slice(0, 5)
 }
 
+function buildLiveFunnelSnapshot(observations, now, maintainerLogin = process.env.OBSERVATORY_MAINTAINER_LOGIN || 'rwflan') {
+  const normalizedMaintainer = maintainerLogin.toLowerCase()
+  const sourceBreakdown = countBy(observations, (observation) => observation.source)
+  const fixtureObservations = observations.filter((observation) => observation.source === 'seed')
+  const githubObservations = observations.filter((observation) => observation.source === 'github-sync')
+  const externalObservations = githubObservations.filter((observation) => String(observation.author || '').toLowerCase() !== normalizedMaintainer)
+  const externalAiObservations = externalObservations.filter((observation) => observation.inferredAiAuthored)
+
+  return {
+    sourceBreakdown,
+    fixtureObservationCount: fixtureObservations.length,
+    githubSyncedObservationCount: githubObservations.length,
+    externalObservationCount: externalObservations.length,
+    externalAiObservationCount: externalAiObservations.length,
+    externalAiPrVelocity: pickRecent(externalAiObservations, now, 7).length,
+    externalMergedCount: externalObservations.filter((observation) => observation.state === 'merged').length,
+    hasLiveExternalEvidence: externalObservations.length > 0
+  }
+}
+
 function buildRawSnapshot(options = {}) {
   const now = asDate(options.now) || new Date()
   const observations = (options.observations || readObservations(options.filePath))
@@ -251,10 +271,12 @@ function buildRawSnapshot(options = {}) {
   const chainStarterSummary = buildChainStarterSummary(aiObservations)
   const reviewEnergy = summarizeReviewEnergy(scored)
   const curation = buildCurationNotes(observations)
+  const liveFunnel = buildLiveFunnelSnapshot(observations, now, options.maintainerLogin)
 
   return {
     generatedAt: now.toISOString(),
     rawObservationWindowDays: 30,
+    liveFunnel,
     observationCount: observations.length,
     aiObservationCount: aiObservations.length,
     humanObservationCount: humanObservations.length,
@@ -374,7 +396,8 @@ function buildSnapshot(options = {}) {
     hotSpots: notes.hotSpots,
     changedAreaBreakdownFromNotes: notes.changedAreaBreakdown,
     toneBreakdown: notes.toneBreakdown,
-    triageMoodBreakdown: notes.triageMoodBreakdown
+    triageMoodBreakdown: notes.triageMoodBreakdown,
+    liveFunnel: raw.liveFunnel
   }
 
   metricsCache.set(cacheKey, curated, 1500)
@@ -395,6 +418,9 @@ function buildNarrativeReport(options = {}) {
     `AI pull request velocity stayed at ${curated.aiPrVelocity} over the last 7 days while slop density landed at ${curated.slopDensity}.`,
     `Maintainers absorbed ${curated.churnContribution} reverted lines recently, with engagement depth sitting at ${curated.engagementDepth}.`,
     `Merge optimism is ${curated.mergeOptimism} and bot recidivism is ${curated.botRecidivism}.`,
+    curated.liveFunnel.hasLiveExternalEvidence
+      ? `The live funnel has ${curated.liveFunnel.externalObservationCount} externally authored GitHub observations, including ${curated.liveFunnel.externalAiObservationCount} inferred AI observations.`
+      : 'The live funnel has no verified external GitHub observations yet; the AI-shaped figures below remain seeded demo data.',
     curated.topTouchedAreas.length
       ? `The busiest maintenance surface was ${curated.topTouchedAreas[0].key}, appearing ${curated.topTouchedAreas[0].count} times in the current sample.`
       : 'Surface-area tracking is still too thin to call a clear hotspot.',
