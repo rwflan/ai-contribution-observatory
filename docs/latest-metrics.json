@@ -1,13 +1,13 @@
 {
   "curated": {
-    "generatedAt": "2026-04-09T04:15:31.384Z",
+    "generatedAt": "2026-07-10T16:57:49.449Z",
     "observationCount": 11,
     "aiObservationCount": 4,
     "humanObservationCount": 7,
-    "aiPrVelocity": 4,
+    "aiPrVelocity": 0,
     "slopDensity": 0.57,
-    "churnContribution": 36,
-    "engagementDepth": 6,
+    "churnContribution": 0,
+    "engagementDepth": 0,
     "reviewEntertainmentValue": 3.6,
     "mergeOptimism": 0.75,
     "speculativeMaintenanceRatio": 0.36,
@@ -28,12 +28,7 @@
     "surfaceAreaAttractionIndex": 1,
     "repeatAgentFamilyRate": 0,
     "firstTimeAgentFamilyRatio": 1,
-    "recentAiPrNumbers": [
-      12,
-      18,
-      21,
-      24
-    ],
+    "recentAiPrNumbers": [],
     "topFollowUpChains": [
       {
         "number": 24,
@@ -311,18 +306,44 @@
       "curious": 8,
       "delighted": 2,
       "uneasy": 1
+    },
+    "liveFunnel": {
+      "sourceBreakdown": {
+        "github-sync": 5,
+        "seed": 6
+      },
+      "fixtureObservationCount": 6,
+      "githubSyncedObservationCount": 5,
+      "externalObservationCount": 0,
+      "externalAiObservationCount": 0,
+      "externalAiPrVelocity": 0,
+      "externalMergedCount": 0,
+      "hasLiveExternalEvidence": false
     }
   },
   "raw": {
-    "generatedAt": "2026-04-09T04:15:31.380Z",
+    "generatedAt": "2026-07-10T16:57:49.445Z",
     "rawObservationWindowDays": 30,
+    "liveFunnel": {
+      "sourceBreakdown": {
+        "github-sync": 5,
+        "seed": 6
+      },
+      "fixtureObservationCount": 6,
+      "githubSyncedObservationCount": 5,
+      "externalObservationCount": 0,
+      "externalAiObservationCount": 0,
+      "externalAiPrVelocity": 0,
+      "externalMergedCount": 0,
+      "hasLiveExternalEvidence": false
+    },
     "observationCount": 11,
     "aiObservationCount": 4,
     "humanObservationCount": 7,
-    "aiPrVelocity": 4,
+    "aiPrVelocity": 0,
     "slopDensity": 0.57,
-    "churnContribution": 36,
-    "engagementDepth": 6,
+    "churnContribution": 0,
+    "engagementDepth": 0,
     "reviewEntertainmentValue": 3.6,
     "mergeOptimism": 0.75,
     "speculativeMaintenanceRatio": 0.36,
@@ -343,12 +364,7 @@
     "surfaceAreaAttractionIndex": 1,
     "repeatAgentFamilyRate": 0,
     "firstTimeAgentFamilyRatio": 1,
-    "recentAiPrNumbers": [
-      12,
-      18,
-      21,
-      24
-    ],
+    "recentAiPrNumbers": [],
     "repeatBotAuthors": [],
     "authorTypeBreakdown": {
       "human": 7,

@@ -8,7 +8,8 @@
     "start": "node src/server.js",
     "report": "node scripts/sync-metrics.mjs",
     "sync:github": "node scripts/sync-github-observations.mjs",
-    "seed:issues": "node scripts/seed-issues.mjs"
+    "seed:issues": "node scripts/seed-issues.mjs",
+    "seed:cohort": "node scripts/seed-active-cohort.mjs"
   },
   "dependencies": {
     "express": "4.16.4",

@@ -32,6 +32,8 @@ The current traction plan lives in [docs/SLOP_ATTRACTION_PLAN.md](./docs/SLOP_AT
 - backlog seeds that maintainers can turn into recurring issue bait
 - contributor docs that make small speculative fixes acceptable
 
+The currently active, differentiated issue cohort lives in [docs/ACTIVE_COHORT.md](./docs/ACTIVE_COHORT.md). The larger open-issue backlog is intentionally left as ambient repository texture.
+
 ## Metrics this repo wants to track
 
 - AI PR velocity
@@ -46,6 +48,7 @@ Generate candidate issue payloads from the backlog:
 
 ```sh
 npm run seed:issues
+npm run seed:cohort
 ```
 
 Then open a small batch across different surfaces, label them with `ai-bait`, `needs-judgment`, or `speculative-fix`, and refresh metrics after PRs arrive.
@@ -65,13 +68,17 @@ Do not deploy this project to production or trust the dependency choices in this
 ## Live Metrics
 
 <!-- METRICS:START -->
-Last generated: 2026-04-09T04:15:31.384Z
+Last generated: 2026-07-10T16:57:49.449Z
 
 - Observation count: 11
-- AI PR velocity (7d): 4
+- Seeded demo observations: 6
+- GitHub-synced observations: 5
+- Verified external GitHub observations: 0
+- Verified external AI PR velocity (7d): 0
+- AI PR velocity (7d): 0
 - Slop density: 0.57
-- Churn contribution (14d reverted lines): 36
-- Engagement depth (30d follow-up PRs): 6
+- Churn contribution (14d reverted lines): 0
+- Engagement depth (30d follow-up PRs): 0
 - Review entertainment value: 3.6
 - Merge optimism: 0.75
 - Speculative maintenance ratio: 0.36
@@ -88,5 +95,5 @@ Last generated: 2026-04-09T04:15:31.384Z
 - Hottest surface: docs (8)
 - Most AI-attractive surface: performance (1)
 - Top AI family: copilot (1)
-- Recent AI PRs: 12, 18, 21, 24
+- Recent AI PRs: none yet
 <!-- METRICS:END -->
