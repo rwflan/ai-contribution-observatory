@@ -1,152 +1,218 @@
-# Application Review: PR Candidates
+# AI Contribution Observatory: Goal-Aligned Experiment Plan
 
 Reviewed: 2026-07-10
 
-## Scope and evidence
+## The actual goal
 
-This review covered the Node HTTP service, metrics normalisation and caching, GitHub sync and reporting scripts, package metadata, and the API documentation. It is a candidate backlog, not an implementation plan: each item is independently reviewable and should be split into its own pull request.
+This repository is not a product waiting to be hardened. It is an experiment designed to attract, absorb, and measure AI-authored pull requests.
 
-The service was started locally on port 3000 and exercised with real HTTP requests and a headed browser session. `/`, `/metrics`, `/metrics/raw`, `/metrics/curated`, `/metrics/history`, and `/admin` all responded. The UI is currently a JSON API rather than a rendered application; the browser confirmed that the metrics payload is directly visible and parseable.
+The target outcome is a repeatable contribution funnel:
 
-Checks run:
+1. An external agent finds a plausible, underspecified task.
+2. It opens a small PR with an interpretation of that task.
+3. A maintainer responds and merges enough low-risk work to create feedback.
+4. The merged work leaves a nearby ambiguity, issue, or report discrepancy that induces a follow-up contribution.
+5. The observatory records which bait, surface, and maintainer response produced that chain.
 
-- `node --check` for every source and script file: passed.
-- `npm audit --json`: 9 production dependency vulnerabilities (1 critical, 5 high, 3 low).
-- `npm run seed:issues`: completed and produced 45 issue payloads.
-- `node scripts/sync-github-observations.mjs --dry-run --limit 5`: completed without writing.
-- Focused runtime probes of route matching, methods, authorisation, and metrics edge cases.
+Success is not a clean codebase, a low audit count, perfect API semantics, or broad test coverage. Success is sustained external AI contribution volume, repeat agents, short chains of follow-up work, and credible measurement of the experiment.
 
-The bundled Playwright shell wrapper could not run because this Windows machine has no WSL distribution. The equivalent `npx --package @playwright/cli playwright-cli` flow opened `/metrics`, took a DOM snapshot, and confirmed the live JSON response.
+## Current baseline
 
-## Priority guide
+The live GitHub repository has a large nominal backlog but no demonstrated external-contributor funnel.
 
-- **P0**: resolve before binding the service to an untrusted network or treating its output as a trusted source.
-- **P1**: confirmed correctness, API, or data-integrity failure in the present app.
-- **P2**: materially improves usability, observability, or maintainability.
-- **P3**: useful follow-up once the above work is complete.
+| Signal | Observed state | What it means |
+| --- | --- | --- |
+| Open issues | 205 | Good raw backlog volume; it supports an understaffed signal. |
+| Recent issue shape | Near-duplicate one-line variants such as `something is off with ...` | The visible choice set is repetitive rather than usefully ambiguous. |
+| Issue discussion | 0 open-issue comments | No public conversation or follow-up energy is accumulating. |
+| Issue labels | Only 10 `good first issue` labels observed | The intended `ai-bait`, `needs-judgment`, and `speculative-fix` funnel is not visibly operating. |
+| Merged pull requests | 11 | Too small a sample for the stated measurement ambition. |
+| PR authors | All 11 are `rwflan` | There is currently no verified external-contributor conversion. |
+| Dashboard activity | 4 AI observations and recent AI PR numbers in a static April snapshot | These are seeded/demo observations, not current proof of live acquisition. |
 
-## Candidate PRs
+The historical backlog should remain open. It creates breadth and chronic-under-capacity texture. The problem is that it is being asked to do two jobs at once: ambient noise and active conversion. It needs an active, differentiated layer on top.
 
-### P0 — Establish a safe dependency baseline or explicitly isolate the experiment
+## Diagnosis
 
-**Evidence.** `npm audit` reports 9 production vulnerabilities: one critical finding in direct dependency `minimist@0.0.8`, five high-severity findings (including direct `lodash@4.17.15` and the `express@4.16.4` tree), and three low-severity findings. `express`, `lodash`, and `minimist` have no runtime import in `src/` or `scripts/`; the server uses Node's built-in `http` module. `IMPLEMENTATION_PLAN.md` states that older packages are intentionally used as contribution bait, so this needs an explicit product decision rather than a silent version bump.
+### What already fits the experiment
 
-**Candidate scope.** Either remove the three unused runtime dependencies and regenerate the lockfile, or move the intentionally vulnerable fixture into a clearly non-runnable, isolated example package. If a dependency is retained, upgrade it to a currently supported non-vulnerable version and document why it remains.
+- The framing is explicit: the repository welcomes small automated changes and values quantity, ambiguity, and follow-up hooks.
+- The codebase has multiple believable surfaces: auth, metrics, docs, reports, scripts, dependencies, cache, and metadata.
+- The issue and PR templates already communicate that interpretation is allowed.
+- The repository intentionally includes dependency drift and vendored surface area, both of which are strong drive-by PR attractors.
 
-**Acceptance criteria.** `npm audit --omit=dev` reports no known production vulnerabilities; `npm start`, reporting, issue seeding, and GitHub-sync dry-run still work; the README accurately describes the remaining experiment boundary.
+### What is not working
 
-### P0 — Disable the default admin credential and remove credentials from URLs
+1. **The active menu is too repetitive.** Repetition is not the same as choice. Four nearly identical issues about the same surface do not create four different plausible PRs.
+2. **The measurement story is ahead of the live experiment.** Seed data is useful as a demo fixture, but it must not be mistaken for current external traction.
+3. **There is no cohort model.** The repo cannot learn which bait works when all 205 issues are effectively one undifferentiated pool.
+4. **There is no visible feedback loop.** Zero issue comments and zero external PRs means the funnel has no public momentum signal.
+5. **The repo has acquisition assets but no acquisition loop.** Templates and instructions help after an agent arrives; they do not themselves cause discovery.
 
-**Evidence.** `src/auth.js` falls back to the predictable token `let-me-in`. Live `GET /admin?token=let-me-in` returned 200 and a snapshot. Tokens in query strings are commonly retained in browser history, access logs, proxies, and referrer data. `server.listen(port)` does not restrict the service to loopback by default.
+## Non-goals and guardrails
 
-**Candidate scope.** Treat an unset `OBSERVATORY_ADMIN_TOKEN` as admin-disabled (or fail startup in an explicitly non-local mode), accept an admin token only through a header, compare fixed-length secrets safely, and bind to loopback by default with an explicit opt-in for external listening.
+These are deliberate exclusions for future work:
 
-**Acceptance criteria.** An unset token cannot grant access; a query-string token never authenticates; a valid header token grants only the documented admin route; integration tests cover disabled, denied, and allowed states.
+- Do not production-harden the service, remove dependency drift, normalize the architecture, or make the docs perfectly consistent.
+- Do not close the broad historic backlog just because it is repetitive or stale.
+- Do not replace ambiguity with narrowly specified tickets or exhaustive acceptance criteria.
+- Do not claim real AI traction from seeded observations.
+- Do not introduce secrets, destructive automation, external-service access, or a claim that the repository is safe to deploy.
 
-### P1 — Make route matching and HTTP method handling deterministic
+The only safety boundary is real-world harm: the experiment may be messy, but it must remain clearly non-production and must not invite contributors to operate on real user data or credentials.
 
-**Evidence.** Route dispatch compares the complete `req.url` string. Live `GET /metrics?probe=1` and `GET /metrics/` incorrectly returned the landing payload rather than metrics. Live `POST /metrics` returned 200 with the normal GET body. `GET /administrator?token=let-me-in` also returned a successful admin response because the server checks `startsWith('/admin')`.
+## Operating plan
 
-**Candidate scope.** Parse the URL once with `new URL(req.url, base)`, dispatch on `pathname`, restrict read endpoints to `GET` (and optionally `HEAD`), use exact admin paths, return JSON 404 for unknown paths, and return 405 plus an `Allow` header for unsupported methods.
+### Phase 1 — Establish an honest experiment baseline
 
-**Acceptance criteria.** Query strings do not change endpoint selection; `/administrator` is a 404; POST to metrics is 405; all advertised endpoints and a representative unknown route have integration coverage.
+**Objective:** make it possible to tell fixture activity from live conversion without reducing the repository's attractive roughness.
 
-### P1 — Correct the metrics-cache key for inline observations
+1. Keep `docs/pr-observations.json` fixtures, but give every observation an explicit provenance: `seed`, `github-sync`, or `manual`.
+2. Publish two adjacent summaries in the README/report:
+   - **Demo shape:** seeded data that illustrates the observatory.
+   - **Live funnel:** GitHub-synced, externally authored PRs and issue interactions only.
+3. Add a weekly manual tally for:
+   - external PRs opened;
+   - AI-attribution confidence and agent family;
+   - issue-to-PR conversion by issue cohort;
+   - repeat agent families;
+   - follow-up PR edges;
+   - median maintainer first response;
+   - merged-share of external PRs.
+4. Treat `0 external PRs` as a valid and important result, not a number to be filled with fixture data.
 
-**Evidence.** `buildSnapshot()` caches using only file path, `now`, and inline observation count. A focused runtime probe built a snapshot from one human observation and then one AI observation at the same timestamp. The second result incorrectly retained `aiObservationCount: 0` and `authorTypeBreakdown: { human: 1 }` from the first call.
+**Decision gate:** do not judge code surfaces until one active cohort has had at least two weeks of exposure.
 
-**Candidate scope.** Do not cache caller-supplied observation arrays, or derive a content-based key that cannot collide. Keep the small TTL only for the file-backed server path and include a file revision signal such as mtime in that cache key.
+### Phase 2 — Create a visible active cohort above the ambient backlog
 
-**Acceptance criteria.** Two equal-length but different inline inputs never share a snapshot; file updates are visible without waiting for a stale cache entry; cache behaviour is covered by deterministic unit tests.
+**Objective:** keep 205+ open issues while presenting a small menu of genuinely different interpretations.
 
-### P1 — Make time-window metrics reject future data and preserve zero durations
+1. Leave the current backlog open and unpolished.
+2. Create a pinned/linked active cohort of 18–24 issues, refreshed every two weeks.
+3. Apply the labels the funnel already promises: `ai-bait`, `needs-judgment`, and `speculative-fix`. Use `good first issue` for only a small minority.
+4. Ensure no active-cohort title is a semantic duplicate of another title.
+5. Give each issue one sentence of tension plus two or three acceptable directions; do not supply a single expected patch.
 
-**Evidence.** `pickRecent()` only checks `daysBetween(now, date) <= days`. A future AI observation dated 2099 was counted in 7-day velocity. The same one-sided comparison is used for 14-day churn and 30-day engagement windows. In normalisation, `normalizeNumeric(value) || fallback` turns valid `0` review and merge durations into `null`; a probe with both fields set to zero yielded null averages.
+Suggested active-cohort mix:
 
-**Candidate scope.** Introduce a shared inclusive window predicate (`0 <= age <= window`) and preserve `0` with nullish checks rather than truthiness. Decide and document whether future timestamps should be excluded, flagged, or rejected during sync.
+| Surface | Number | Productive tension |
+| --- | ---: | --- |
+| Docs and reports | 4 | Two documents/report fields describe the same thing differently. |
+| Metrics and observation shape | 4 | A ratio or field is plausible but has competing interpretations. |
+| Auth/admin | 3 | The loose flow appears useful but reveals an intentionally unresolved trade-off. |
+| Scripts and generated output | 3 | Output is useful but awkward to paste, compare, or extend. |
+| Dependencies and vendored surface | 3 | Update pressure is obvious, but the repo story conflicts with cleanup. |
+| Tests and fixtures | 3 | A narrow behavior is undocumented or has an incomplete fixture. |
+| Metadata and contributor flow | 2 | Templates or labels invite a small adjustment without closing the topic. |
 
-**Acceptance criteria.** Future observations affect no recent-window metric; exactly-now and boundary-date observations behave consistently; zero-hour review and merge values are included in averages; tests cover negative, zero, boundary, and invalid dates.
+**Decision gate:** compare conversion and PR quality by bait family, not by the total issue count.
 
-### P1 — Define public versus restricted observation data
+### Phase 3 — Design for chains, not isolated fixes
 
-**Evidence.** Live `/metrics/raw` returned about 21 KB and `/metrics/history` about 14 KB, compared with about 4.6 KB for `/metrics/curated`. The raw/history responses include full observation bodies and can include `maintainerNote`, while both routes are publicly reachable. The existing data happens to be GitHub-oriented, but the schema explicitly supports locally added maintainer annotations.
+**Objective:** every merge should make the next plausible PR easier to imagine.
 
-**Candidate scope.** Publish a deliberate data-classification policy. Make raw/history admin-only, or create a public redacted history shape that strips note/body fields and returns only dashboard-safe fields. Add `Cache-Control` appropriate to the chosen sensitivity and freshness policy.
+For each accepted external PR, the maintainer should leave exactly one deliberate follow-up hook:
 
-**Acceptance criteria.** Every endpoint has a documented audience; unauthenticated responses cannot reveal private annotations; public response examples are redacted; tests assert the restricted fields never appear in public responses.
+- link a nearby unresolved issue;
+- add a short report note that creates a competing interpretation;
+- leave an adjacent field undocumented;
+- ask whether the raw and curated views should diverge further;
+- add a small fixture that exposes a new parser edge;
+- split a docs claim from its generated output by one harmless degree.
 
-### P1 — Add resilient observation loading, validation, and atomic sync writes
+Do not ask contributors to manufacture meaningless work. The hook should be a believable next question, not a fake defect.
 
-**Evidence.** `readObservations()` performs unguarded `JSON.parse` inside the request path. A malformed or partially written `docs/pr-observations.json` would throw rather than return a controlled service error. The GitHub sync writes the destination file directly with `writeFileSync`, so an interrupted write can create exactly that failure mode. Normalisation also accepts a broad range of unvalidated shapes and silently invents defaults.
+Record the parent PR number and hook type so the experiment can measure actual chain depth rather than only assumed follow-on potential.
 
-**Candidate scope.** Validate observations at the file boundary with a small explicit schema; return a structured 500/503 and log the validation failure rather than crashing a request handler; write sync output to a temporary file, validate it, then rename atomically. Preserve a last-known-good snapshot if appropriate.
+### Phase 4 — Run a maintainer feedback loop
 
-**Acceptance criteria.** Malformed JSON, a non-array root, and invalid records have defined error behaviour; a failed sync leaves the previous file intact; validation errors name the affected record/field without exposing secrets; failure paths have integration tests.
+**Objective:** make external agents observe motion without turning review into a quality gate.
 
-### P1 — Add an automated test and CI baseline
+Weekly:
 
-**Evidence.** `package.json` has no `test`, lint, or CI verification script. The bugs above are small pure-function and HTTP-routing regressions that a lightweight Node test suite would have caught.
+1. Refresh or rotate one third of the active cohort.
+2. Reply to outside PRs quickly, even when requesting a narrow revision.
+3. Merge a meaningful share of low-risk, reversible contributions.
+4. Add one follow-up hook per merged external PR.
+5. Sync live GitHub observations and publish the report.
+6. Record which issue title, label combination, surface, and hook created the PR.
+7. Keep the ambient backlog untouched unless it accidentally becomes the active cohort's best performer.
 
-**Candidate scope.** Use Node's built-in `node:test` first to keep the repository small. Add unit tests for metrics/normalisation/cache and HTTP integration tests that start the server on an ephemeral port. Add a GitHub Actions workflow that runs syntax checks, tests, and the dependency audit policy.
+Every two weeks:
 
-**Acceptance criteria.** `npm test` is documented and passes from a clean clone; the cache, date, zero-value, route, and admin cases above are covered; pull requests receive a required or clearly visible CI result.
+1. Retire only the active-cohort links, not the underlying issues.
+2. Promote the two best-converting bait families.
+3. Replace the two weakest with new tension patterns.
+4. Publish a short maintainer note about what agents misunderstood; turn that misunderstanding into the next cohort.
 
-### P1 — Provide a Windows-safe non-mutating GitHub sync command
+## Acquisition plan
 
-**Evidence.** The documented command `npm run sync:github -- --dry-run --limit 5` was interpreted by the installed npm/PowerShell combination as `node scripts/sync-github-observations.mjs 5`: it ignored `--dry-run` and wrote three current PR observations. The exact direct Node invocation, `node scripts/sync-github-observations.mjs --dry-run --limit 5`, correctly reported `dryRun: true` and made no change.
+The repository currently has no verified external PR authors, so passive GitHub discovery should be treated as an untested channel.
 
-**Candidate scope.** Add a dedicated `sync:github:dry-run` script with no forwarded flags, document platform-safe forms for optional arguments, and make the script print an unmistakable write/dry-run banner before doing network work. Consider requiring an explicit `--write` flag so the safe action is the default.
+1. Make the active cohort easy to locate from the README and AI contributor guide.
+2. Link individual active issues—not the entire 205-issue list—where agent-capable coding communities, agent-run directories, or tool-specific contribution surfaces permit it.
+3. Use a distinct label or issue-body marker for each distribution channel so conversion can be attributed.
+4. Do not pay for, spam, or mass-message contributors. The experiment is measuring voluntary agent behavior, not forced task completion.
+5. Seek explicit approval before posting externally from the repository's accounts.
 
-**Acceptance criteria.** The documented Windows PowerShell command cannot write data; dry-run behaviour is tested by asserting the observation file hash is unchanged; the write path requires an intentional opt-in.
+## Experiment metrics
 
-### P2 — Measure first review, not first non-author comment
+Track these as the primary scoreboard:
 
-**Evidence.** `findFirstReviewTime()` combines issue comments and formal review events, then chooses the earliest non-author event. A casual maintainer comment therefore counts as a code review and understates time-to-first-review.
+| Metric | Definition | Why it matters |
+| --- | --- | --- |
+| External AI PR velocity | Verified external AI-attributed PRs opened per 7 days | Core acquisition signal. |
+| Cohort conversion | Active issues receiving at least one PR / active issues exposed | Tests bait quality. |
+| Interpretation diversity | Distinct solution approaches per issue family | Measures useful ambiguity rather than duplication. |
+| Repeat-agent rate | Agent families returning in later cohorts | Tests whether feedback creates retention. |
+| Chain depth | Follow-up PRs linked to a parent PR | Measures compounding activity. |
+| Merge velocity | Time from external PR open to merge/first response | Measures feedback strength. |
+| Review cost | Maintainer minutes or comments per merged PR | Prevents volume from becoming unmanageable. |
+| Fixture/live ratio | Seeded observations compared with verified live observations | Prevents the dashboard from overstating traction. |
 
-**Candidate scope.** Define the metric in `docs/observation-shape.md`; either use only submitted review events or publish separate `timeToFirstCommentHours` and `timeToFirstReviewHours`. Preserve the source event type for auditability.
+Secondary metrics such as slop density, dependency drama, and review entertainment remain useful marketing/reporting material, but they should not be mistaken for evidence of acquisition.
 
-**Acceptance criteria.** A comment before a later review does not reduce the review-duration metric; comment and review metrics can be independently inspected; fixture tests use both event types.
+## First four weeks
 
-### P2 — Harden GitHub-sync failure reporting and scale behaviour
+### Week 1
 
-**Evidence.** The sync invokes `gh pr view` sequentially for every listed pull request and throws raw child-process errors. It has no timeout, rate-limit handling, retry policy, or useful partial-failure summary. The limit defaults to 25 but is user-controlled and unbounded above.
+- Publish the live-versus-seed baseline.
+- Create and label the first 20-issue active cohort.
+- Add a clear active-cohort link to the README and AI contributor guide.
+- Choose two external distribution channels, subject to maintainer approval.
 
-**Candidate scope.** Validate a reasonable maximum limit, add a bounded-concurrency fetch pool, wrap `gh` failures with actionable context, and decide whether a partially fetched dataset should fail completely or write only after a clear confirmation. Add an optional machine-readable error/result summary.
+### Week 2
 
-**Acceptance criteria.** Missing `gh` authentication, a single failed PR lookup, and API rate-limit responses produce clear non-zero results without corrupting the observation file; large limits do not run unbounded sequential work; behaviour is documented.
+- Respond to every outside PR quickly.
+- Measure conversion by surface and label combination.
+- Add follow-up hooks to every merged external PR.
+- Replace only the weakest five active issues; leave the 205-issue ambient backlog alone.
 
-### P2 — Document the actual API contract and add machine-readable discovery
+### Week 3
 
-**Evidence.** `docs/api-draft.md` lists only `/metrics`, `/metrics/history`, and `/admin`, while the live service also exposes `/metrics/raw` and `/metrics/curated`. It labels all shapes as uncertain, and the root endpoint omits `/admin` entirely. Consumers cannot tell which response is stable, public, cached, or raw.
+- Run one paired bait test: two issues with the same surface but different tension patterns, such as docs drift versus conflicting metrics language.
+- Publish the first cohort report with zeroes shown honestly if no external conversion occurred.
+- Keep the winning issue wording visible and rotate one new surface into the cohort.
 
-**Candidate scope.** Replace the draft with an accurate endpoint table covering methods, auth, cache/freshness, status codes, and response schemas. Align the root discovery response with that table, or remove discovery if it is not intended as an API contract. Consider OpenAPI only if downstream tooling needs it.
+### Week 4
 
-**Acceptance criteria.** Documentation enumerates every live route and response audience; examples validate against the service; a test or generated artifact prevents implementation/documentation drift.
+- Review the four-week funnel: which channels delivered visits/PRs, which bait converted, which agents returned, and which hooks created chains.
+- Double down on the two highest-converting surfaces.
+- Change the cohort only enough to preserve novelty; do not polish away the repository's broader inconsistency.
 
-### P2 — Make AI attribution auditable and reduce false positives
+## Candidate work that supports the experiment
 
-**Evidence.** Local attribution classifies any author containing `bot` as AI-authored and any label containing `ai` as an AI signal. These broad heuristics can classify unrelated automation or labels incorrectly. The sync script calculates signal names but does not persist them in the observation, making a result difficult to audit later.
+These are appropriate future PRs because they increase conversion or measurement without turning the repo into a product:
 
-**Candidate scope.** Persist attribution signals and confidence provenance, distinguish generic automation from AI authorship, use exact/curated labels where possible, and expose an override workflow. Report an `unknown` or `automation` category rather than forcing a human/AI binary when evidence is weak.
+1. Split reports into clearly marked `seeded demo` and `live GitHub` sections.
+2. Add an active-cohort index generated from labeled issues, deliberately simpler than a full project board.
+3. Add issue-cohort and distribution-channel fields to observations.
+4. Add a small report section that lists merged PRs' follow-up hooks.
+5. Expand the issue generator with differentiated tension patterns rather than more duplicate one-liners.
+6. Add a deliberately imperfect fixture family that makes parser/report cleanup plausible.
+7. Add overlapping author, chain, surface, and admin-ish endpoints that create new reviewable ambiguity.
+8. Add narrow, non-exhaustive tests only where a test itself becomes a contribution surface.
 
-**Acceptance criteria.** Known generic bots are not silently counted as AI; every inferred attribution has inspectable evidence; manual overrides survive sync; fixtures cover false-positive and false-negative cases.
+## Definition of success
 
-### P3 — Add operational health and error observability
-
-**Evidence.** Startup logs only the port. Request failures, parse errors, source freshness, cache state, and GitHub-sync outcomes have no structured operational signals. The existing metrics endpoint describes contribution data rather than service health.
-
-**Candidate scope.** Add a minimal `/healthz` endpoint and structured error logging. Include source-file freshness and a non-sensitive last-sync result in a restricted diagnostics response. Keep public health responses free of observation data and credentials.
-
-**Acceptance criteria.** Operators can distinguish a healthy empty dataset from an unreadable dataset; failed syncs are diagnosable from one log/result; health checks do not expose raw observations or admin state.
-
-## Suggested delivery order
-
-1. Decide whether the intentionally vulnerable dependency fixture stays in the runnable app. If not, deliver the dependency and admin-boundary P0 work first.
-2. Add the test baseline before or alongside the cache, window, and routing corrections so their observed behaviour cannot return.
-3. Define the public data contract before expanding dashboards or external integrations.
-4. Make sync safe-by-default, then improve its accuracy and operational robustness.
-5. Finish documentation and health visibility once endpoint semantics settle.
-
-## Deliberately not called defects
-
-The JSON-only browser presentation, deliberately broad issue backlog, and intentionally playful metric names fit the repository's stated experiment. They become product defects only if the project changes its goal from contribution experiment to a production dashboard. The P0 items are still important because the current code can be exposed by an ordinary Node bind even if production use is disclaimed.
+At the end of the first four-week cycle, success is not a polished app. Success is evidence that at least one acquisition channel, one bait family, and one maintainer response pattern reliably produce an external AI-authored PR; ideally, at least one of those PRs produces a linked follow-up contribution.
