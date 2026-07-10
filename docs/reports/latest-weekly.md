@@ -1,11 +1,11 @@
 # Weekly Observatory Report
 
-Generated: 2026-07-10T14:23:52.785Z
+Generated: 2026-04-09T04:15:31.384Z
 
 ## Summary
 
-AI pull request velocity stayed at 0 over the last 7 days while slop density landed at 0.57.
-Maintainers absorbed 0 reverted lines recently, with engagement depth sitting at 0.
+AI pull request velocity stayed at 4 over the last 7 days while slop density landed at 0.57.
+Maintainers absorbed 36 reverted lines recently, with engagement depth sitting at 6.
 Merge optimism is 0.75 and bot recidivism is 0.
 The busiest maintenance surface was docs, appearing 8 times in the current sample.
 The most AI-attractive surface was performance, with an attraction index of 1.

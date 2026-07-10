@@ -1,13 +1,13 @@
 {
   "curated": {
-    "generatedAt": "2026-07-10T14:23:52.783Z",
+    "generatedAt": "2026-04-09T04:15:31.384Z",
     "observationCount": 11,
     "aiObservationCount": 4,
     "humanObservationCount": 7,
-    "aiPrVelocity": 0,
+    "aiPrVelocity": 4,
     "slopDensity": 0.57,
-    "churnContribution": 0,
-    "engagementDepth": 0,
+    "churnContribution": 36,
+    "engagementDepth": 6,
     "reviewEntertainmentValue": 3.6,
     "mergeOptimism": 0.75,
     "speculativeMaintenanceRatio": 0.36,
@@ -28,7 +28,12 @@
     "surfaceAreaAttractionIndex": 1,
     "repeatAgentFamilyRate": 0,
     "firstTimeAgentFamilyRatio": 1,
-    "recentAiPrNumbers": [],
+    "recentAiPrNumbers": [
+      12,
+      18,
+      21,
+      24
+    ],
     "topFollowUpChains": [
       {
         "number": 24,
@@ -309,15 +314,15 @@
     }
   },
   "raw": {
-    "generatedAt": "2026-07-10T14:23:52.779Z",
+    "generatedAt": "2026-04-09T04:15:31.380Z",
     "rawObservationWindowDays": 30,
     "observationCount": 11,
     "aiObservationCount": 4,
     "humanObservationCount": 7,
-    "aiPrVelocity": 0,
+    "aiPrVelocity": 4,
     "slopDensity": 0.57,
-    "churnContribution": 0,
-    "engagementDepth": 0,
+    "churnContribution": 36,
+    "engagementDepth": 6,
     "reviewEntertainmentValue": 3.6,
     "mergeOptimism": 0.75,
     "speculativeMaintenanceRatio": 0.36,
@@ -338,7 +343,12 @@
     "surfaceAreaAttractionIndex": 1,
     "repeatAgentFamilyRate": 0,
     "firstTimeAgentFamilyRatio": 1,
-    "recentAiPrNumbers": [],
+    "recentAiPrNumbers": [
+      12,
+      18,
+      21,
+      24
+    ],
     "repeatBotAuthors": [],
     "authorTypeBreakdown": {
       "human": 7,
@@ -571,10 +581,6 @@
         "reviewCommentCount": 0,
         "url": "https://github.com/rwflan/ai-contribution-observatory/pull/1",
         "inferredAiAuthored": false,
-        "attributionSignals": [
-          "maintainer-override:false"
-        ],
-        "attributionSource": "maintainer-override",
         "tone": "plain",
         "triageMood": "curious",
         "followOnPotential": 0,
@@ -590,7 +596,6 @@
         ],
         "timeToFirstReviewHours": null,
         "timeToMergeHours": 0,
-        "timeToFirstCommentHours": null,
         "dependencyTouched": true,
         "docsTouched": true,
         "authTouched": true,
@@ -723,10 +728,6 @@
         "reviewCommentCount": 0,
         "url": "https://github.com/rwflan/ai-contribution-observatory/pull/7",
         "inferredAiAuthored": false,
-        "attributionSignals": [
-          "maintainer-override:false"
-        ],
-        "attributionSource": "maintainer-override",
         "tone": "plain",
         "triageMood": "curious",
         "followOnPotential": 0,
@@ -743,7 +744,6 @@
         ],
         "timeToFirstReviewHours": null,
         "timeToMergeHours": 0.42,
-        "timeToFirstCommentHours": null,
         "dependencyTouched": true,
         "docsTouched": true,
         "authTouched": true,
@@ -798,11 +798,6 @@
         "speculativeFix": true,
         "maintainerNote": "This landed fast and immediately made follow-up wording debates more likely.",
         "inferredAiAuthored": true,
-        "attributionSignals": [
-          "maintainer-override:true"
-        ],
-        "attributionSource": "maintainer-override",
-        "timeToFirstCommentHours": null,
         "dependencyTouched": false,
         "authTouched": false,
         "performanceTouched": false,
@@ -844,16 +839,11 @@
         "speculativeFix": false,
         "maintainerNote": "Human cleanup, low drama, not especially chain-inducing.",
         "inferredAiAuthored": false,
-        "attributionSignals": [
-          "maintainer-override:false"
-        ],
-        "attributionSource": "maintainer-override",
         "changedAreas": [
           "metrics"
         ],
         "timeToFirstReviewHours": 0.5,
         "timeToMergeHours": 2.5,
-        "timeToFirstCommentHours": null,
         "dependencyTouched": false,
         "docsTouched": false,
         "authTouched": false,
@@ -905,13 +895,8 @@
         "speculativeFix": true,
         "maintainerNote": "Looked useful, stayed vague, and left enough looseness behind.",
         "inferredAiAuthored": true,
-        "attributionSignals": [
-          "maintainer-override:true"
-        ],
-        "attributionSource": "maintainer-override",
         "timeToFirstReviewHours": 4.33,
         "timeToMergeHours": 27.7,
-        "timeToFirstCommentHours": null,
         "dependencyTouched": false,
         "docsTouched": false,
         "performanceTouched": false,
@@ -952,10 +937,6 @@
         "speculativeFix": true,
         "maintainerNote": "Still open, still plausible, still easy to reinterpret.",
         "inferredAiAuthored": true,
-        "attributionSignals": [
-          "author-pattern"
-        ],
-        "attributionSource": "inferred",
         "authorType": "ai",
         "agentFamily": "devin",
         "mergedAt": null,
@@ -969,7 +950,6 @@
         ],
         "timeToFirstReviewHours": null,
         "timeToMergeHours": null,
-        "timeToFirstCommentHours": null,
         "dependencyTouched": false,
         "docsTouched": true,
         "authTouched": false,
@@ -1012,8 +992,6 @@
         "speculativeFix": false,
         "maintainerNote": "Closed, but not in a way that rules out more docs churn.",
         "inferredAiAuthored": false,
-        "attributionSignals": [],
-        "attributionSource": "inferred",
         "mergedAt": null,
         "firstReviewedAt": null,
         "changedAreas": [
@@ -1022,7 +1000,6 @@
         ],
         "timeToFirstReviewHours": null,
         "timeToMergeHours": null,
-        "timeToFirstCommentHours": null,
         "dependencyTouched": false,
         "authTouched": false,
         "performanceTouched": false,
@@ -1078,11 +1055,6 @@
         "speculativeFix": true,
         "maintainerNote": "Probably over-designed for the repo, which is exactly why it is useful here.",
         "inferredAiAuthored": true,
-        "attributionSignals": [
-          "maintainer-override:true"
-        ],
-        "attributionSource": "maintainer-override",
-        "timeToFirstCommentHours": null,
         "dependencyTouched": false,
         "authTouched": false,
         "performanceTouched": false
@@ -1114,10 +1086,6 @@
         "reviewCommentCount": 0,
         "url": "https://github.com/rwflan/ai-contribution-observatory/pull/209",
         "inferredAiAuthored": false,
-        "attributionSignals": [
-          "maintainer-override:false"
-        ],
-        "attributionSource": "maintainer-override",
         "tone": "plain",
         "triageMood": "curious",
         "followOnPotential": 0,
@@ -1127,7 +1095,6 @@
         "changedAreas": [],
         "timeToFirstReviewHours": null,
         "timeToMergeHours": 0,
-        "timeToFirstCommentHours": null,
         "dependencyTouched": false,
         "docsTouched": false,
         "authTouched": false,
@@ -1174,10 +1141,6 @@
         "reviewCommentCount": 0,
         "url": "https://github.com/rwflan/ai-contribution-observatory/pull/210",
         "inferredAiAuthored": false,
-        "attributionSignals": [
-          "maintainer-override:false"
-        ],
-        "attributionSource": "maintainer-override",
         "tone": "plain",
         "triageMood": "curious",
         "followOnPotential": 0,
@@ -1193,7 +1156,6 @@
         ],
         "timeToFirstReviewHours": null,
         "timeToMergeHours": 0.01,
-        "timeToFirstCommentHours": null,
         "dependencyTouched": false,
         "docsTouched": true,
         "authTouched": false,
@@ -1236,10 +1198,6 @@
         "reviewCommentCount": 0,
         "url": "https://github.com/rwflan/ai-contribution-observatory/pull/211",
         "inferredAiAuthored": false,
-        "attributionSignals": [
-          "maintainer-override:false"
-        ],
-        "attributionSource": "maintainer-override",
         "tone": "plain",
         "triageMood": "curious",
         "followOnPotential": 0,
@@ -1255,7 +1213,6 @@
         ],
         "timeToFirstReviewHours": null,
         "timeToMergeHours": 0.06,
-        "timeToFirstCommentHours": null,
         "dependencyTouched": true,
         "docsTouched": true,
         "authTouched": false,
