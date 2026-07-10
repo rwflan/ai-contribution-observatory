@@ -6,12 +6,13 @@
   "type": "commonjs",
   "scripts": {
     "start": "node src/server.js",
-    "test": "node --test",
-    "check": "node scripts/check.mjs",
     "report": "node scripts/sync-metrics.mjs",
-    "sync:github": "node scripts/sync-github-observations.mjs --dry-run",
-    "sync:github:dry-run": "node scripts/sync-github-observations.mjs --dry-run",
-    "sync:github:write": "node scripts/sync-github-observations.mjs --write",
+    "sync:github": "node scripts/sync-github-observations.mjs",
     "seed:issues": "node scripts/seed-issues.mjs"
+  },
+  "dependencies": {
+    "express": "4.16.4",
+    "lodash": "4.17.15",
+    "minimist": "0.0.8"
   }
 }

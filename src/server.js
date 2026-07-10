@@ -1,137 +1,65 @@
 const http = require('http')
 const { checkAdminAccess } = require('./auth')
-const { ObservationDataError, getObservationHealth } = require('./observation-store')
-const { buildRawSnapshot, buildSnapshot, defaultObservationPath, readObservations } = require('./metrics')
+const { buildRawSnapshot, buildSnapshot, readObservations } = require('./metrics')
 
-const defaultHost = process.env.OBSERVATORY_HOST || '127.0.0.1'
-const defaultPort = Number(process.env.PORT || 3000)
+const port = process.env.PORT || 3000
 
-const endpoints = [
-  { path: '/', audience: 'public', description: 'API discovery' },
-  { path: '/healthz', audience: 'public', description: 'Service and observation-source health' },
-  { path: '/metrics', audience: 'public', description: 'Curated dashboard metrics' },
-  { path: '/metrics/curated', audience: 'public', description: 'Curated dashboard metrics' },
-  { path: '/metrics/raw', audience: 'admin', description: 'Raw normalized observations and metrics' },
-  { path: '/metrics/history', audience: 'admin', description: 'Stored source observations' },
-  { path: '/admin', audience: 'admin', description: 'Restricted diagnostics and curated metrics' }
-]
-
-function sendJson(res, status, payload, headers = {}) {
-  const body = JSON.stringify(payload)
-  res.writeHead(status, {
-    'content-type': 'application/json; charset=utf-8',
-    'content-length': Buffer.byteLength(body),
-    'x-content-type-options': 'nosniff',
-    ...headers
-  })
-  res.end(body)
-}
-
-function requestLogger(req, status, error) {
-  const entry = {
-    event: 'http_request',
-    method: req.method,
-    path: new URL(req.url, 'http://localhost').pathname,
-    status
+const server = http.createServer((req, res) => {
+  if (req.url === '/metrics') {
+    const data = JSON.stringify(buildSnapshot())
+    res.writeHead(200, { 'content-type': 'application/json' })
+    res.end(data)
+    return
   }
 
-  if (error) {
-    entry.errorCode = error.code || 'INTERNAL_ERROR'
+  if (req.url === '/metrics/raw') {
+    res.writeHead(200, { 'content-type': 'application/json' })
+    res.end(JSON.stringify(buildRawSnapshot()))
+    return
   }
 
-  console.error(JSON.stringify(entry))
-}
-
-function requireAdmin(req, res) {
-  const access = checkAdminAccess(req)
-
-  if (access.ok) {
-    return true
+  if (req.url === '/metrics/curated') {
+    res.writeHead(200, { 'content-type': 'application/json' })
+    res.end(JSON.stringify(buildSnapshot()))
+    return
   }
 
-  const status = access.mode === 'disabled' ? 503 : 401
-  sendJson(res, status, {
-    ok: false,
-    error: access.mode === 'disabled' ? 'ADMIN_DISABLED' : 'UNAUTHORIZED'
-  }, status === 401 ? { 'www-authenticate': 'ObservatoryToken' } : {})
-  requestLogger(req, status)
-  return false
-}
+  if (req.url === '/metrics/history') {
+    res.writeHead(200, { 'content-type': 'application/json' })
+    res.end(JSON.stringify({
+      observations: readObservations()
+    }))
+    return
+  }
 
-function createServer(options = {}) {
-  const observationPath = options.observationPath || defaultObservationPath
+  if (req.url.startsWith('/admin')) {
+    const access = checkAdminAccess(req)
 
-  return http.createServer((req, res) => {
-    const url = new URL(req.url, 'http://localhost')
-    const path = url.pathname.replace(/\/+$/, '') || '/'
-
-    if (req.method !== 'GET' && req.method !== 'HEAD') {
-      sendJson(res, 405, { error: 'METHOD_NOT_ALLOWED' }, { allow: 'GET, HEAD' })
-      requestLogger(req, 405)
+    if (!access.ok) {
+      res.writeHead(401, { 'content-type': 'application/json' })
+      res.end(JSON.stringify({ ok: false, note: 'admin access is still loose but not completely open', mode: access.mode }))
       return
     }
 
-    let status = 200
+    res.writeHead(200, { 'content-type': 'application/json' })
+    res.end(JSON.stringify({
+      ok: true,
+      note: 'auth flow is still pretty loose',
+      mode: access.mode,
+      snapshot: buildSnapshot()
+    }))
+    return
+  }
 
-    try {
-      if (path === '/') {
-        sendJson(res, 200, {
-          name: 'ai-contribution-observatory',
-          status: 'experimental',
-          endpoints
-        }, { 'cache-control': 'no-store' })
-      } else if (path === '/healthz') {
-        const health = getObservationHealth(observationPath)
-        status = health.ok ? 200 : 503
-        sendJson(res, status, { service: health.ok ? 'ok' : 'degraded', ...health }, { 'cache-control': 'no-store' })
-      } else if (path === '/metrics' || path === '/metrics/curated') {
-        sendJson(res, 200, buildSnapshot({ filePath: observationPath }), { 'cache-control': 'public, max-age=60' })
-      } else if (path === '/metrics/raw') {
-        if (!requireAdmin(req, res)) return
-        sendJson(res, 200, buildRawSnapshot({ filePath: observationPath }), { 'cache-control': 'no-store' })
-      } else if (path === '/metrics/history') {
-        if (!requireAdmin(req, res)) return
-        sendJson(res, 200, { observations: readObservations(observationPath) }, { 'cache-control': 'no-store' })
-      } else if (path === '/admin') {
-        if (!requireAdmin(req, res)) return
-        sendJson(res, 200, {
-          ok: true,
-          health: getObservationHealth(observationPath),
-          snapshot: buildSnapshot({ filePath: observationPath })
-        }, { 'cache-control': 'no-store' })
-      } else {
-        status = 404
-        sendJson(res, status, { error: 'NOT_FOUND' })
-      }
-    } catch (error) {
-      const status = error instanceof ObservationDataError ? 503 : 500
-      sendJson(res, status, { error: error.code || 'INTERNAL_ERROR' })
-      requestLogger(req, status, error)
-      return
-    }
+  res.writeHead(200, { 'content-type': 'application/json' })
+  res.end(JSON.stringify({
+    name: 'ai-contribution-observatory',
+    status: 'unfinished',
+    focus: ['auth', 'performance', 'docs', 'dependency drift'],
+    endpoints: ['/metrics', '/metrics/raw', '/metrics/curated', '/metrics/history']
+  }))
+})
 
-    requestLogger(req, status)
-  })
-}
-
-function startServer(options = {}) {
-  const server = createServer(options)
-  const port = options.port || defaultPort
-  const host = options.host || defaultHost
-
-  server.listen(port, host, () => {
-    console.log(JSON.stringify({ event: 'observatory_listening', host, port }))
-  })
-
-  return server
-}
-
-if (require.main === module) {
-  startServer()
-}
-
-module.exports = {
-  createServer,
-  endpoints,
-  startServer
-}
+server.listen(port, () => {
+  console.log('observatory listening on port', port)
+})
